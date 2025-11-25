@@ -1,1 +1,1 @@
-# Jeu-Echecs
+Chess Game Créer à l'aide de mes connaissances ;)
