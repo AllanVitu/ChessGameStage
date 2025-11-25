@@ -345,32 +345,31 @@
   </main>
 
   <script>
-  // Sélection des éléments
-  const btnAbandonner = document.getElementById('loose');
-  const popup = document.getElementById('popup');
-  const btnAccueil = document.getElementById('btn-accueil');
-  const btnMatchList = document.getElementById('btn-matchlist');
 
-  // 1. Ouvrir la popup au clic sur "Abandonner"
-  btnAbandonner.addEventListener('click', function() {
-    popup.classList.add('active');
-  });
+    const btnAbandonner = document.getElementById('loose');
+    const popup = document.getElementById('popup');
+    const btnAccueil = document.getElementById('btn-accueil');
+    const btnMatchList = document.getElementById('btn-matchlist');
 
-  // 2. Redirection vers l'accueil (index.html est dans le dossier parent)
-  btnAccueil.addEventListener('click', function() {
-    window.location.href = '../index.html'; 
-  });
 
-  // 3. Redirection vers la liste des matchs (dans le même dossier views)
-  btnMatchList.addEventListener('click', function() {
-    window.location.href = 'matchList.html';
-  });
-  
-  // (Optionnel) Fermer la popup si on clique sur le fond gris (overlay)
-  document.querySelector('.overlay').addEventListener('click', function() {
-    popup.classList.remove('active');
-  });
-</script>
+    btnAbandonner.addEventListener('click', function () {
+      popup.classList.add('active');
+    });
+
+
+    btnAccueil.addEventListener('click', function () {
+      window.location.href = '../index.html';
+    });
+
+
+    btnMatchList.addEventListener('click', function () {
+      window.location.href = 'matchList.html';
+    });
+
+    document.querySelector('.overlay').addEventListener('click', function () {
+      popup.classList.remove('active');
+    });
+  </script>
 </body>
 
 </html>
