@@ -29,9 +29,6 @@ h1 {
   text-align: center;
 }
 
-.logo{
-  
-}
 
 .container {
   width: min(430px, 932px);
@@ -48,6 +45,22 @@ h1 {
     0 24px 60px rgba(255, 255, 255, 0.55);
   min-height: 750px;
   position: relative;
+}
+
+/* Amélioration pour .container et .card */
+.container, .card {
+  /* Garde ton background existant mais rends-le plus transparent */
+  background: rgba(4, 39, 109, 0.6); /* Exemple basé sur tes couleurs */
+  backdrop-filter: blur(10px); /* C'est ça qui fait l'effet "verre" moderne */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent); /* Effet néon */
 }
 
 .row{
