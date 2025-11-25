@@ -18,9 +18,11 @@
       place-items: center;
       font-family: Arial, Helvetica, sans-serif;
       padding: 45px;
+      background-color: #343a40 !important;
     }
 
     h1 {
+      color: #fff;
       text-align: center;
     }
 
@@ -70,13 +72,13 @@
     }
 
     .clair {
-      background: #cccccc;
+      background: #adb5bd;
       color: #000;
     }
 
     .obscur {
-      background: #888888;
-      color: #000;
+      background: #495057;
+      color: #fff;
     }
 
     .board-actions {
@@ -90,8 +92,8 @@
     .container {
       width: min(430px, 932px);
       border: 1.5px solid;
-      background: #eeaeca;
-      background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+      background: #495057;
+      border: none !important;
       border-radius: 10px;
       padding: 26px 26px 34px;
       box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) inset, 0 24px 60px rgba(255, 255, 255, 0.55);
@@ -113,23 +115,22 @@
       cursor: pointer;
     }
 
-    /* STYLES DE LA POP-UP */
     .popup {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
-      /* Utilise toute la largeur de la fenêtre */
+
       height: 100vh;
-      /* Utilise toute la hauteur de la fenêtre */
+
       pointer-events: none;
-      /* Laisse passer les clics quand fermé */
+
       z-index: 1000;
-      /* Passe au-dessus de tout */
+
       opacity: 0;
-      /* Invisible par défaut */
+
       transition: opacity 0.3s ease;
-      /* Transition douce pour l'apparition */
+
     }
 
     .popup .overlay {
@@ -139,7 +140,7 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.5);
-      /* Fond gris semi-transparent */
+
     }
 
     .popup .popup-content {
@@ -188,17 +189,17 @@
       background-color: transparent;
     }
 
-    /* CLASSE ACTIVE POUR AFFICHER LA POP-UP */
+
     .popup.active {
       opacity: 1;
-      /* REND LA POPUP VISIBLE */
+
       pointer-events: all;
-      /* Réactive les clics */
+
     }
 
     .popup.active .popup-content {
       transform: translate(-50%, -50%) scale(1);
-      /* Animation de zoom */
+
     }
   </style>
 
@@ -279,7 +280,7 @@
         <div class="noir side">5</div>
         <div class="noir side">6</div>
         <div class="case obscur"></div>
-        
+
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
@@ -349,17 +350,16 @@
     const btnMatchList = document.getElementById('btn-matchlist');
     const overlay = document.querySelector('.overlay');
 
-    // Ouverture
+
     btnAbandonner.addEventListener('click', function () {
       popup.classList.add('active');
     });
 
-    // Fermeture (clic sur le fond gris)
+
     overlay.addEventListener('click', function () {
       popup.classList.remove('active');
     });
 
-    // Liens
     btnAccueil.addEventListener('click', function () {
       window.location.href = '../index.html';
     });
