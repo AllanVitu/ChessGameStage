@@ -29,6 +29,27 @@ h1 {
   text-align: center;
 }
 
+/* Important pour positionner la croix par rapport à la carte */
+.card {
+    position: relative; 
+}
+
+.btn-close {
+    position: absolute;
+    top: -3px;
+    right: 10px;
+    text-decoration: none;
+    color: #ff4d4d; /* Rouge vif */
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+
+.btn-close:hover {
+    transform: scale(1.2); /* Grossit un peu au survol */
+    color: #ff0000;
+}
 
 .container {
   width: min(430px, 932px);
@@ -73,6 +94,7 @@ h1 {
   display: grid;
   align-items: center;
   justify-content: space-between;
+  background-color: #04276d;
   gap: 10px;
   height: 30px;
   padding: 0 15px;

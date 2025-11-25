@@ -4,13 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="shortcut icon" type="image/png" href="./assets/imgs/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="./assets/imgs/favicon.png" />
     <title>Profile</title>
     <link rel="stylesheet" href="/assets/common.css">
 </head>
 
 <style>
-    .pill{
+    .pill {
         justify-content: right;
     }
 </style>
@@ -19,23 +19,35 @@
     <main class="container">
 
         <a style="font-size: 30px; " href="/views/matchList.html">&#128281;</a>
-        <br/>
+        <br />
 
         <h1>Profil User</h1>
 
         <div class="row" style="align-items:center; margin-bottom:10px">
             <input class="input" placeholder="Pseudo" style="max-width:280px, justi">
         </div>
-        
+
         <div class="grid3">
             <input class="input" placeholder="Nom">
             <input class="input" placeholder="Prénom">
             <input class="input" placeholder="E-mail">
         </div>
 
+        <div class="row" style="margin-top: 20px; align-items: center; justify-content: space-between;">
+
+            <a class="btn-outline" href="change.html" style="font-size: 0.9rem;">Changement de mot de passe</a>
+
+            <div style="display: flex; gap: 10px;">
+                <a class="btn-outline" href="../index.html">Annuler</a>
+                <button class="btn">Valider</button>
+            </div>
+
+        </div>
+
         <div class="card" style="min-height:320px; border-radius:5px; margin-top:40px; position:relative">
-            <div style="position:absolute; left:50%; transform:translateX(-50%); top:-25px" class="pill">Story Games</div>
-            <!--<p class="small">Aucun contenu pour l'instant.</p>--> 
+            <div style="position:absolute; left:50%; transform:translateX(-50%); top:-25px" class="pill">Story Games
+            </div>
+            <!--<p class="small">Aucun contenu pour l'instant.</p>-->
         </div>
 
     </main>

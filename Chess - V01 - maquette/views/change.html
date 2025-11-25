@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="FR-fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="./assets/imgs/favicon.png"/>
+    <link rel="shortcut icon" type="image/png" href="./assets/imgs/favicon.png" />
     <link rel="stylesheet" href="/assets/common.css">
     <title>Change Password</title>
 </head>
+
 <body>
     <main class="container">
         <a style="font-size: 30px; " href="/index.html">&#128281;</a>
         <h1>Changement de mot de passe</h1>
         <form class="card" action="/index.html" method="get">
+            <a href="/index.html" class="btn-close" title="Annuler">&times;</a>
+
             <div class="grid3">
                 <input class="input" type="email" placeholder="E-Mail" required>
-                <input type="text">
+                <input class="input" type="password" placeholder="Mot de passe actuelle" required>
                 <input class="input" type="password" placeholder="Nouveau mot de passe" required>
                 <input class="input" type="password" placeholder="Confirmer nouveau mot de passe" required>
             </div>
-            <div class="row" style="margin-top: 14px;">
-                <button class="btn" type="submit"><a href="/index.html">Validé le changement de MDP</a></button>
+
+            <div class="row" style="margin-top: 14px; justify-content: center;">
+                <button class="btn" type="submit">Valider le changement</button>
             </div>
         </form>
     </main>
 </body>
+
 </html>
