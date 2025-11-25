@@ -55,12 +55,28 @@
     }
 
     .go {
-        display: flex;
-        justify-content: center;
+        display: block;
+
+        width: fit-content;
+
+        margin: 20px auto;
+
+        text-align: center;
+
+
         border: 1.5px solid;
         border-radius: 8px;
-        padding: 4px 8px;
+        padding: 10px 30px;
+
         cursor: pointer;
+        text-decoration: none;
+
+        color: white;
+    }
+
+
+    .go:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 </style>
 
@@ -80,7 +96,7 @@
         </form>
 
         <form class="card" action="newMatch.html" method="get">
-            <p class="indic">Veuillez choisir le temps de la partie</p>
+            <p class="indic">Délais d'attente</p>
             <div class="btn-choise">
                 <button class="choise-F">05:00</button>
                 <button class="choise-T">10:00</button>

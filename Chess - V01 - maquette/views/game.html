@@ -7,13 +7,13 @@
   <link rel="shortcut icon" type="image/png" href="./assets/imgs/favicon.png" />
   <title>Jeu d’échecs</title>
   <style>
+    /* STYLES DU PLATEAU */
     .board-wrap {
       display: grid;
       place-items: center;
     }
 
     body {
-      /*margin: auto;*/
       display: center;
       place-items: center;
       font-family: Arial, Helvetica, sans-serif;
@@ -33,6 +33,9 @@
     .case {
       width: 50px;
       height: 50px;
+      display: flex;
+      /* Centrer les pièces */
+      justify-content: center;
       align-items: center;
       font-size: 190%;
       line-height: 1;
@@ -40,10 +43,10 @@
     }
 
     .noir {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       text-transform: uppercase;
-      /*padding: 10%;
-      font-size: 60%;*/
       line-height: 1;
       user-select: none;
       background: #000;
@@ -52,7 +55,6 @@
 
     .top,
     .bottom {
-      margin: 0px;
       height: 10px;
       width: 50px;
     }
@@ -85,34 +87,19 @@
       height: 110px;
     }
 
-    .btn-loose {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1.5px solid;
-      border-radius: 5px;
-      height: 30px;
-      padding: 0 15px;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
     .container {
       width: min(430px, 932px);
       border: 1.5px solid;
       background: #eeaeca;
-      background: radial-gradient(circle,
-          rgba(238, 174, 202, 1) 0%,
-          rgba(148, 187, 233, 1) 100%);
+      background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
       border-radius: 10px;
       padding: 26px 26px 34px;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) inset,
-        0 24px 60px rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) inset, 0 24px 60px rgba(255, 255, 255, 0.55);
       min-height: 750px;
       position: relative;
     }
 
+    /* STYLES DU BOUTON ABANDONNER */
     .center {
       position: absolute;
       top: 85%;
@@ -120,94 +107,98 @@
       transform: translate(-50%, -50%);
     }
 
+    #loose {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* STYLES DE LA POP-UP */
     .popup {
       position: fixed;
-      top: 0%;
-      left: 0%;
-      width: 100%;
-      height: 100%;
-
+      top: 0;
+      left: 0;
+      width: 100vw;
+      /* Utilise toute la largeur de la fenêtre */
+      height: 100vh;
+      /* Utilise toute la hauteur de la fenêtre */
       pointer-events: none;
+      /* Laisse passer les clics quand fermé */
       z-index: 1000;
+      /* Passe au-dessus de tout */
+      opacity: 0;
+      /* Invisible par défaut */
+      transition: opacity 0.3s ease;
+      /* Transition douce pour l'apparition */
     }
 
     .popup .overlay {
-      position: fixed;
-      top: 0%;
-      left: 0%;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.05);
-      opacity: 0;
-      transition: opacity 100ms ease-in-out 200ms;
+      background: rgba(0, 0, 0, 0.5);
+      /* Fond gris semi-transparent */
     }
 
     .popup .popup-content {
       position: absolute;
-      top: 85%;
+      top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(1.15);
-      width: 95%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 90%;
       max-width: 350px;
       background: #fff;
       border-radius: 15px;
-      opacity: 0;
-      box-shadow: 0px 2px 2px 5px rgba(0, 0, 0, 0.05);
-      transition: all 300ms ease-in-out;
+      padding: 20px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      transition: transform 0.3s ease;
     }
 
     .popup .popup-content h2 {
-      margin: 10px 6px;
-      font-size: 25px;
+      margin-top: 0;
       color: #111;
-      text-align: center;
     }
 
     .popup .popup-content p {
-      margin: 15px 0px;
-      color: #222;
-      font-size: 16px;
-      text-align: center;
+      color: #333;
     }
 
     .popup .popup-content .controls {
       display: flex;
-      justify-content: space-between;
-      margin: 20px 0px 0px;
+      justify-content: space-around;
+      margin-top: 20px;
     }
 
-    .popup .popup-content .controls button {
-      padding: 10px 20px;
-      border: none;
-      outline: none;
-      font-size: 15px;
-      border-radius: 15px;
+    .popup .popup-content button {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    .popup .popup-content .controls .bck-accueil {
-      background: transparent;
-      color: #3284ed;
+    .bck-list {
+      background-color: #04276d;
+      color: white;
     }
 
-    .popup .popup-content .controls .bck-list {
-      background: #3284ed;
-      color: #fff;
+    .bck-accueil {
+      background-color: transparent;
     }
 
+    /* CLASSE ACTIVE POUR AFFICHER LA POP-UP */
     .popup.active {
-      top: 0%;
-      transition: top 0ms ease-in-out 0ms;
-      pointer-events: all;
-    }
-
-    .popup.active .overlay {
       opacity: 1;
-      transition: all 300ms ease-in-out;
+      /* REND LA POPUP VISIBLE */
+      pointer-events: all;
+      /* Réactive les clics */
     }
 
     .popup.active .popup-content {
-      transform: translate(-50%, -50%) scale(1.15);
+      transform: translate(-50%, -50%) scale(1);
+      /* Animation de zoom */
     }
   </style>
 
@@ -216,11 +207,10 @@
 <body>
   <main class="container">
     <h1>Game</h1>
-    <div class="board-actions">
-    </div>
+    <div class="board-actions"></div>
+
     <div class="board-wrap">
       <div id="plateau">
-
         <div class="noir corner"></div>
         <div class="noir top">A</div>
         <div class="noir top">B</div>
@@ -244,9 +234,9 @@
         <div class="noir side">1</div>
 
         <div class="noir side">2</div>
-        <div id="2A" class="case obscur">&#9823;</div>
-        <div id="2B" class="case clair">&#9823;</div>
-        <div id="2C" class="case obscur">&#9823;</div>
+        <div class="case obscur">&#9823;</div>
+        <div class="case clair">&#9823;</div>
+        <div class="case obscur">&#9823;</div>
         <div class="case clair">&#9823;</div>
         <div class="case obscur">&#9823;</div>
         <div class="case clair">&#9823;</div>
@@ -262,33 +252,34 @@
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
+
         <div class="case obscur"></div>
         <div class="noir side">3</div>
-
         <div class="noir side">4</div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
         <div class="case obscur"></div>
+
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
         <div class="noir side">4</div>
-
         <div class="noir side">5</div>
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
+
         <div class="case obscur"></div>
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="noir side">5</div>
-
         <div class="noir side">6</div>
         <div class="case obscur"></div>
+        
         <div class="case clair"></div>
         <div class="case obscur"></div>
         <div class="case clair"></div>
@@ -332,46 +323,48 @@
         <div class="noir corner"></div>
       </div>
     </div>
+
     <div class="center">
       <button id="loose">Abandonner</button>
-      <div class="popup" id="popup">
-        <div class="overlay"></div>
-        <div class="popup-content">
-          <h2>Match Terminé</h2>
-          <p>Vous avez abandonné la partie.</p>
-          <div class="controls">
-            <button class="bck-accueil" id="btn-accueil">Retour Accueil</button>
-            <button class="bck-list" id="btn-matchlist">Retour liste match</button>
-          </div>
+    </div>
+
+    <div class="popup" id="popup">
+      <div class="overlay"></div>
+      <div class="popup-content">
+        <h2>Match Terminé</h2>
+        <p>Vous avez abandonné la partie.</p>
+        <div class="controls">
+          <button class="bck-accueil" id="btn-accueil">Retour Accueil</button>
+          <button class="bck-list" id="btn-matchlist">Retour liste match</button>
         </div>
       </div>
     </div>
+
   </main>
 
   <script>
-
     const btnAbandonner = document.getElementById('loose');
     const popup = document.getElementById('popup');
     const btnAccueil = document.getElementById('btn-accueil');
     const btnMatchList = document.getElementById('btn-matchlist');
+    const overlay = document.querySelector('.overlay');
 
-
+    // Ouverture
     btnAbandonner.addEventListener('click', function () {
       popup.classList.add('active');
     });
 
+    // Fermeture (clic sur le fond gris)
+    overlay.addEventListener('click', function () {
+      popup.classList.remove('active');
+    });
 
+    // Liens
     btnAccueil.addEventListener('click', function () {
       window.location.href = '../index.html';
     });
-
-
     btnMatchList.addEventListener('click', function () {
       window.location.href = 'matchList.html';
-    });
-
-    document.querySelector('.overlay').addEventListener('click', function () {
-      popup.classList.remove('active');
     });
   </script>
 </body>
