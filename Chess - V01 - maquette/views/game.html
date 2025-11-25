@@ -50,7 +50,8 @@
       color: #fff;
     }
 
-    .top, .bottom {
+    .top,
+    .bottom {
       margin: 0px;
       height: 10px;
       width: 50px;
@@ -329,18 +330,47 @@
     </div>
     <div class="center">
       <button id="loose">Abandonner</button>
-    </div>
-    <div class="popup" id="popup">
-      <div class="overlay"></div>
-      <div class="popup-content"></div>
-      <h2>Match Terminé</h2>
-      <p>Votre MATCH EST FINI</p>
-      <div class="controls">
-        <button class="bck-accueil">Retour Accueil</button>
-        <button class="bck-list">Retour liste match</button>
+      <div class="popup" id="popup">
+        <div class="overlay"></div>
+        <div class="popup-content">
+          <h2>Match Terminé</h2>
+          <p>Vous avez abandonné la partie.</p>
+          <div class="controls">
+            <button class="bck-accueil" id="btn-accueil">Retour Accueil</button>
+            <button class="bck-list" id="btn-matchlist">Retour liste match</button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
+
+  <script>
+  // Sélection des éléments
+  const btnAbandonner = document.getElementById('loose');
+  const popup = document.getElementById('popup');
+  const btnAccueil = document.getElementById('btn-accueil');
+  const btnMatchList = document.getElementById('btn-matchlist');
+
+  // 1. Ouvrir la popup au clic sur "Abandonner"
+  btnAbandonner.addEventListener('click', function() {
+    popup.classList.add('active');
+  });
+
+  // 2. Redirection vers l'accueil (index.html est dans le dossier parent)
+  btnAccueil.addEventListener('click', function() {
+    window.location.href = '../index.html'; 
+  });
+
+  // 3. Redirection vers la liste des matchs (dans le même dossier views)
+  btnMatchList.addEventListener('click', function() {
+    window.location.href = 'matchList.html';
+  });
+  
+  // (Optionnel) Fermer la popup si on clique sur le fond gris (overlay)
+  document.querySelector('.overlay').addEventListener('click', function() {
+    popup.classList.remove('active');
+  });
+</script>
 </body>
 
 </html>
