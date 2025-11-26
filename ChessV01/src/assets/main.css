@@ -1,35 +1,164 @@
-@import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+:root {
+  --bg-body: #343a40;
+  --bg-card: #495057;
+  --bg-input: #6c757d;
+  --text-main: #f8f9fa;
+  --text-muted: #ced4da;
+  --accent: #0d6efd;
+  --border: rgba(255, 255, 255, 0.2);
+  --phone-width: 430px;
 }
 
-a,
-.green {
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--phone-width);
+  min-height: 100vh;
+  background-color: var(--bg-card);
+  padding: 25px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0 30px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+a {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+  color: inherit;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+.input,
+select {
+  width: 100%;
+  height: 45px;
+  background-color: var(--bg-input);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 15px;
+  color: white;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
 }
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: #58616b;
+}
+
+.btn,
+.btn-outline,
+.btn-outline2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+  text-align: center;
+  border: none;
+  font-size: 1rem;
+}
+
+.btn {
+  background-color: var(--accent);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-1px);
+}
+
+.btn-outline,
+.btn-outline2 {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+.btn-outline:hover,
+.btn-outline2:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-main);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-close {
+  position: absolute;
+  top: -4px;
+  right: 9px;
+  color: #ff6b6b;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.btn-close:hover {
+  color: #ff4c4c;
+}
+
