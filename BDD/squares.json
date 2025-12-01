@@ -1,0 +1,8 @@
+[
+    {
+        "id": " uuid ",
+        "color": "varchar(50)",
+        "vertical_postition": "varchar(50)",
+        "honrizontal_position": "varchar(50)"
+    }
+]
