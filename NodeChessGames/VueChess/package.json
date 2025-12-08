@@ -16,6 +16,9 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.3",
     "pinia": "^3.0.4",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3"
