@@ -33,13 +33,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useUserStore } from '../stores/user'
 import { useRouter } from 'vue-router'
+import router from '../router'
 
 const userStore = useUserStore()
-const router = useRouter()
-
-const user = ref({ ...userStore.user })
+// On utilise une valeur par défaut (objet vide) si user est null
+const user = ref({ ...(userStore.user || {}) })
 const message = ref('')
 
 const updateProfile = async () => {
