@@ -3,8 +3,20 @@
     <h1>Changer le mot de passe</h1>
     <form class="card" @submit.prevent="changePassword">
       <div class="grid2">
-        <input v-model="currentPassword" class="input" type="password" required placeholder="Ancien mot de passe" />
-        <input v-model="newPassword" class="input" type="password" required placeholder="Nouveau mot de passe" />
+        <input
+          v-model="currentPassword"
+          class="input"
+          type="password"
+          required
+          placeholder="Ancien mot de passe"
+        />
+        <input
+          v-model="newPassword"
+          class="input"
+          type="password"
+          required
+          placeholder="Nouveau mot de passe"
+        />
         <input
           v-model="confirmNewPassword"
           class="input"

@@ -13,7 +13,9 @@
           <p class="player">{{ blackPlayer }}</p>
         </div>
       </div>
-      <p class="helper">Sélectionne une pièce puis sa destination. Les règles de déplacement de base sont validées.</p>
+      <p class="helper">
+        Sélectionne une pièce puis sa destination. Les règles de déplacement de base sont validées.
+      </p>
       <div class="board-actions">
         <button class="btn" type="button" @click="resetGame">Réinitialiser</button>
         <button class="btn-outline" type="button" @click="backToList">Retour à la liste</button>
@@ -24,7 +26,9 @@
     <div class="board-wrap">
       <div id="plateau">
         <div class="noir corner"></div>
-        <div v-for="file in files" :key="`top-${file}`" class="noir top">{{ file.toUpperCase() }}</div>
+        <div v-for="file in files" :key="`top-${file}`" class="noir top">
+          {{ file.toUpperCase() }}
+        </div>
         <div class="noir corner"></div>
 
         <template v-for="(rankRow, rowIndex) in board" :key="`rank-${ranks[rowIndex]}`">
@@ -44,7 +48,9 @@
         </template>
 
         <div class="noir corner"></div>
-        <div v-for="file in files" :key="`bottom-${file}`" class="noir bottom">{{ file.toUpperCase() }}</div>
+        <div v-for="file in files" :key="`bottom-${file}`" class="noir bottom">
+          {{ file.toUpperCase() }}
+        </div>
         <div class="noir corner"></div>
       </div>
     </div>
@@ -80,19 +86,24 @@ const currentMatch = computed(() => matchesStore.getMatch(matchId))
 
 const whitePlayer = computed(() => {
   if (!currentMatch.value) return 'Blanc'
-  return currentMatch.value.color === 'White' ? currentMatch.value.host : currentMatch.value.opponent ?? 'Invité'
+  return currentMatch.value.color === 'White'
+    ? currentMatch.value.host
+    : (currentMatch.value.opponent ?? 'Invité')
 })
 
 const blackPlayer = computed(() => {
   if (!currentMatch.value) return 'Noir'
-  return currentMatch.value.color === 'Black' ? currentMatch.value.host : currentMatch.value.opponent ?? 'Invité'
+  return currentMatch.value.color === 'Black'
+    ? currentMatch.value.host
+    : (currentMatch.value.opponent ?? 'Invité')
 })
 
 const statusMessage = computed(() => {
   return turn.value === 'white' ? 'Au tour des blancs' : 'Au tour des noirs'
 })
 
-const cloneBoard = (source: Board): Board => source.map((row) => row.map((cell) => (cell ? { ...cell } : null)))
+const cloneBoard = (source: Board): Board =>
+  source.map((row) => row.map((cell) => (cell ? { ...cell } : null)))
 
 const syncFromStore = () => {
   if (!currentMatch.value) return
@@ -198,7 +209,10 @@ const computeLegalMoves = (row: number, col: number, piece: Piece) => {
 
   switch (piece.type) {
     case 'p': {
-      if (pushIfEmpty(row + direction, col) && ((piece.color === 'white' && row === 6) || (piece.color === 'black' && row === 1))) {
+      if (
+        pushIfEmpty(row + direction, col) &&
+        ((piece.color === 'white' && row === 6) || (piece.color === 'black' && row === 1))
+      ) {
         pushIfEmpty(row + 2 * direction, col)
       }
       pushIfCapture(row + direction, col - 1)
@@ -286,7 +300,8 @@ const renderPiece = (color: Color, type: Piece['type']) => {
 const squareClass = (rowIndex: number, fileIndex: number, file: string, rank: number) => {
   const dark = (rowIndex + fileIndex) % 2 === 1 ? 'obscur' : 'clair'
   const square = `${file}${rank}`
-  const isSelected = selected.value && selected.value.row === rowIndex && selected.value.col === fileIndex
+  const isSelected =
+    selected.value && selected.value.row === rowIndex && selected.value.col === fileIndex
   return {
     [dark]: true,
     selected: isSelected,

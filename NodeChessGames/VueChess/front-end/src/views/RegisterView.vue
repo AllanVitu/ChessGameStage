@@ -8,7 +8,14 @@
         <input v-model="form.prenom" class="input" type="text" required placeholder="Prénom" />
         <input v-model="form.nom" class="input" type="text" required placeholder="Nom" />
         <input v-model="form.email" class="input" type="email" required placeholder="Email" />
-        <input v-model="form.password" class="input" type="password" required minlength="6" placeholder="Mot de passe" />
+        <input
+          v-model="form.password"
+          class="input"
+          type="password"
+          required
+          minlength="6"
+          placeholder="Mot de passe"
+        />
         <input
           v-model="form.confirmPassword"
           class="input"
@@ -19,12 +26,15 @@
         />
       </div>
 
-      <p class="helper">Les données partent vers http://localhost:3000/api/register. Sans backend, tu peux revenir en arrière et utiliser le mode local.</p>
+      <p class="helper">
+        Les données partent vers http://localhost:3000/api/register. Sans backend, tu peux revenir
+        en arrière et utiliser le mode local.
+      </p>
       <p v-if="error" class="error-msg">{{ error }}</p>
 
-      <div class="row" style="margin-top:14px; justify-content: center;">
+      <div class="row" style="margin-top: 14px; justify-content: center">
         <button class="btn" type="submit">Créer le compte</button>
-        <router-link to="/" class="btn-outline" style="text-decoration:none">Annuler</router-link>
+        <router-link to="/" class="btn-outline" style="text-decoration: none">Annuler</router-link>
       </div>
     </form>
   </main>

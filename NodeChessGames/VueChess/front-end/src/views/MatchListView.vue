@@ -13,7 +13,9 @@
         </select>
         <button class="btn" type="button" @click="createLocalMatch">Lancer la partie</button>
       </div>
-      <p class="helper">Les parties sont stockées en mémoire pour jouer en face à face sur le même écran.</p>
+      <p class="helper">
+        Les parties sont stockées en mémoire pour jouer en face à face sur le même écran.
+      </p>
     </section>
 
     <div class="btn-outline-top">
@@ -21,10 +23,12 @@
       <router-link class="btn-nav" to="/">Déconnexion</router-link>
     </div>
 
-    <section style="margin-top: 20px; overflow-y: auto; padding-right: 5px;">
+    <section style="margin-top: 20px; overflow-y: auto; padding-right: 5px">
       <article v-for="match in matches" :key="match.id" class="match-row">
         <div class="cell pseudo">{{ match.host }}</div>
-        <div class="cell" :class="match.color === 'White' ? 'text-white' : 'text-black'">{{ match.color }}</div>
+        <div class="cell" :class="match.color === 'White' ? 'text-white' : 'text-black'">
+          {{ match.color }}
+        </div>
         <div class="cell opponent" v-if="match.opponent">vs {{ match.opponent }}</div>
         <div class="join">
           <button class="join-btn" type="button" @click="joinAndPlay(match)">

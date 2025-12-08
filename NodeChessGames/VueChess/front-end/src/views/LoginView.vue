@@ -20,14 +20,18 @@
       <p v-if="error" class="error-msg">{{ error }}</p>
 
       <div class="row" style="margin-top: 14px; justify-content: center; gap: 10px">
-        <button class="btn" type="submit" :disabled="loading">{{ loading ? 'Connexion...' : 'Se connecter' }}</button>
+        <button class="btn" type="submit" :disabled="loading">
+          {{ loading ? 'Connexion...' : 'Se connecter' }}
+        </button>
         <router-link to="/register" class="btn-outline">Créer un compte</router-link>
       </div>
 
       <div style="text-align: center; margin-top: 15px">
         <router-link class="mdp-oublie" to="/forgot-password">Mot de passe oublié ?</router-link>
         <p class="helper">Pas de serveur ? Passe en mode local pour tester avec un ami.</p>
-        <button type="button" class="btn-outline2" @click="continueOffline">Mode local (sans API)</button>
+        <button type="button" class="btn-outline2" @click="continueOffline">
+          Mode local (sans API)
+        </button>
       </div>
     </form>
   </main>
