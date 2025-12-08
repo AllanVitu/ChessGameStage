@@ -5,7 +5,7 @@
 
 
 <script setup>
-
+import './views/LoginView.vue'
 </script>
 
 
