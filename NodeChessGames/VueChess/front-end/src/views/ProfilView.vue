@@ -44,16 +44,22 @@ const user = ref({ ...(userStore.user || {}) })
 const message = ref('')
 
 const updateProfile = async () => {
-    const response = await fetch(`http://localhost:3000/api/users/${user.value.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user.value)
-    })
-    
-    if(response.ok) {
-        message.value = "Profil mis à jour"
-        userStore.user = user.value // Mettre à jour le store
-    }
+  if (!user.value.id) {
+    message.value = 'Profil local mis à jour (non synchronisé)'
+    userStore.setUser(user.value)
+    return
+  }
+
+  const response = await fetch(`http://localhost:3000/api/users/${user.value.id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(user.value),
+  })
+
+  if (response.ok) {
+    message.value = 'Profil mis à jour'
+    userStore.setUser(user.value)
+  }
 }
 
 const logout = () => {

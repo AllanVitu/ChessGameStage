@@ -1,4 +1,3 @@
-
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import LoginView from '../views/LoginView.vue'
@@ -8,6 +7,7 @@ import ForgotPasswordView from '../views/ForgotPasswordView.vue'
 import ResetPasswordView from '../views/ResetPasswordView.vue'
 import ProfileView from '../views/ProfilView.vue'
 import ChangePasswordView from '../views/ChangePasswordView.vue'
+import ChessBoard from '../views/ChessBoard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,11 +17,11 @@ const router = createRouter({
     { path: '/forgot-password', name: 'forgot-password', component: ForgotPasswordView },
     { path: '/reset-password', name: 'reset-password', component: ResetPasswordView },
     { path: '/match-list', name: 'match-list', component: MatchListView, meta: { requiresAuth: true } },
+    { path: '/game/:id', name: 'game', component: ChessBoard, meta: { requiresAuth: true } },
     { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
-    { path: '/change-password', name: 'change-password', component: ChangePasswordView, meta: { requiresAuth: true } }
-  ]
+    { path: '/change-password', name: 'change-password', component: ChangePasswordView, meta: { requiresAuth: true } },
+  ],
 })
-
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()

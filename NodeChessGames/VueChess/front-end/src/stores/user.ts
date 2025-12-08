@@ -1,9 +1,17 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
+
+export interface UserProfile {
+  id?: string
+  pseudo?: string
+  email?: string
+  nom?: string
+  prenom?: string
+}
 
 export const useUserStore = defineStore('user', () => {
   const token = ref<string | null>(localStorage.getItem('token'))
-  const user = ref(null)
+  const user = ref<UserProfile | null>(null)
 
   const isAuthenticated = computed(() => !!token.value)
 
@@ -14,6 +22,10 @@ export const useUserStore = defineStore('user', () => {
     } else {
       localStorage.removeItem('token')
     }
+  }
+
+  function setUser(newUser: UserProfile | null) {
+    user.value = newUser
   }
 
   function logout() {
@@ -27,6 +39,7 @@ export const useUserStore = defineStore('user', () => {
     user,
     isAuthenticated,
     setToken,
-    logout
+    setUser,
+    logout,
   }
 })

@@ -3,10 +3,10 @@
   "include": ["env.d.ts", "front-end/src/**/*", "front-end/src/**/*.vue", "front-end/src/App.vue"],
   "exclude": ["front-end/src/**/__tests__/*"],
   "compilerOptions": {
+    "baseUrl": ".",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
     "paths": {
-      "@/*": ["/front-end/src/*"]
+      "@/*": ["front-end/src/*"]
     }
   }
 }
