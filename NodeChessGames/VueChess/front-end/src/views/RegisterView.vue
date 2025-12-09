@@ -27,8 +27,7 @@
       </div>
 
       <p class="helper">
-        Les données partent vers http://localhost:3000/api/register. Sans backend, tu peux revenir
-        en arrière et utiliser le mode local.
+
       </p>
       <p v-if="error" class="error-msg">{{ error }}</p>
 
