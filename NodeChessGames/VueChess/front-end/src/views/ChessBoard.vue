@@ -14,7 +14,7 @@
         </div>
       </div>
       <p class="helper">
-        Sélectionne une pièce puis sa destination. Les règles de déplacement de base sont validées.
+       
       </p>
       <div class="board-actions">
         <button class="btn" type="button" @click="resetGame">Réinitialiser</button>

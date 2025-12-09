@@ -28,7 +28,7 @@
 
       <div style="text-align: center; margin-top: 15px">
         <router-link class="mdp-oublie" to="/forgot-password">Mot de passe oublié ?</router-link>
-        <p class="helper">Pas de serveur ? Passe en mode local pour tester avec un ami.</p>
+        <p class="helper"></p>
         <button type="button" class="btn-outline2" @click="continueOffline">
           Mode local (sans API)
         </button>

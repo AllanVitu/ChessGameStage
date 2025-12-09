@@ -14,7 +14,7 @@
         <button class="btn" type="button" @click="createLocalMatch">Lancer la partie</button>
       </div>
       <p class="helper">
-        Les parties sont stockées en mémoire pour jouer en face à face sur le même écran.
+      
       </p>
     </section>
 

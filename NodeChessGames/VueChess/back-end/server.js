@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken'); // Pour le token
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SECRET_KEY = process.env.SECRET_KEY || "mon_secret_super_securise"; // À mettre dans un fichier .env
+const SECRET_KEY = process.env.SECRET_KEY || "mon_secret_super_securise";
 const DB_FILE = path.join(__dirname, 'users.json');
 
 app.use(cors());
-app.use(express.json()); // Remplace body-parser
+app.use(express.json()); 
 
 // --- UTILITAIRES ---
 
@@ -44,7 +44,7 @@ app.post('/api/register', async (req, res) => {
     const newUser = {
         id: Date.now().toString(),
         email,
-        password: hashedPassword, // On stocke le hash, pas le texte clair
+        password: hashedPassword, // On stocke le hash pas le texte clair
         pseudo,
         nom,
         prenom,
