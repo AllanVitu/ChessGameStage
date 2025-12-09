@@ -1,0 +1,43 @@
+[
+    {
+        "email": "  ",
+        "password": "  ",
+        "firstname": " ",
+        "lastname": " ",
+        "pseudo": "  "
+    },
+    {
+        "_id": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0aa01"
+        },
+        "email": "michael@example.com",
+        "passwordHash": "$2b$10$exempleDeHashBCrypt...............",
+        "firstname": "Michael",
+        "lastname": "Brillant",
+        "pseudo": "Michael",
+        "elo": 1450,
+        "createdAt": {
+            "$date": "2024-05-01T12:00:00Z"
+        },
+        "updatedAt": {
+            "$date": "2024-05-01T12:00:00Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0aa02"
+        },
+        "email": "spoutnik@example.com",
+        "passwordHash": "$2b$10$exempleDeHashBCrypt...............",
+        "firstname": "Sophie",
+        "lastname": "Martin",
+        "pseudo": "Spoutnik",
+        "elo": 1500,
+        "createdAt": {
+            "$date": "2024-05-02T12:00:00Z"
+        },
+        "updatedAt": {
+            "$date": "2024-05-02T12:00:00Z"
+        }
+    }
+]

@@ -1,0 +1,44 @@
+[
+    {
+        "_id": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ad01"
+        },
+        "gameId": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ab01"
+        },
+        "position": "e4",
+        "color": "light",
+        "piece": {
+            "type": "pawn",
+            "color": "white"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ad02"
+        },
+        "gameId": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ab01"
+        },
+        "position": "e5",
+        "color": "dark",
+        "piece": {
+            "type": "pawn",
+            "color": "black"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ad03"
+        },
+        "gameId": {
+            "$oid": "64b0f1d0b1a5c3a1d0c0ab01"
+        },
+        "position": "f1",
+        "color": "light",
+        "piece": {
+            "type": "bishop",
+            "color": "white"
+        }
+    }
+]
