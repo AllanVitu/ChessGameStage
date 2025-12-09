@@ -1,7 +1,31 @@
 [
-    {
-        "id": "uuid",
-        "pseudo":" ",
-        "color": " "
-    } 
+  {
+    "_id": {"$oid": "64b0f1d0b1a5c3a1d0c0ab01"},
+    "name": "Partie amicale #1",
+    "status": "in_progress",
+    "turn": "white",
+    "createdAt": {"$date": "2024-05-05T18:00:00Z"},
+    "updatedAt": {"$date": "2024-05-05T18:15:00Z"},
+    "createdBy": {"$oid": "64b0f1d0b1a5c3a1d0c0aa01"},
+    "players": [
+      {
+        "userId": {"$oid": "64b0f1d0b1a5c3a1d0c0aa01"},
+        "pseudo": "Michael",
+        "color": "white",
+        "joinedAt": {"$date": "2024-05-05T18:00:00Z"}
+      },
+      {
+        "userId": {"$oid": "64b0f1d0b1a5c3a1d0c0aa02"},
+        "pseudo": "Spoutnik",
+        "color": "black",
+        "joinedAt": {"$date": "2024-05-05T18:05:00Z"}
+      }
+    ],
+    "board": {
+      "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+      "moveNumber": 1
+    },
+    "moveCount": 3,
+    "winner": null
+  }
 ]
