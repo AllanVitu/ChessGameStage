@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema(
     pseudo: { type: String, required: true, trim: true },
     nom: { type: String, required: true, trim: true },
     prenom: { type: String, required: true, trim: true },
+    avatar: { type: String, default: '' }, // data URL (PNG/JPEG) stocké en base
     previousPasswords: { type: [String], default: [] },
   },
   { timestamps: true }
@@ -50,7 +51,8 @@ userSchema.set('toJSON', {
 const User = mongoose.model('User', userSchema);
 
 app.use(cors());
-app.use(express.json());
+// Autoriser un JSON plus gros pour accepter les images encodées en base64
+app.use(express.json({ limit: '4mb' }));
 
 const generateToken = (user) =>
   jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: '24h' });
@@ -103,6 +105,37 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la connexion :', error);
     res.status(500).json({ error: 'Impossible de se connecter pour le moment.' });
+  }
+});
+
+// 3. Mise à jour du profil (y compris avatar)
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const allowedFields = ['pseudo', 'nom', 'prenom', 'email', 'avatar'];
+    const updates = {};
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    });
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'Aucune donnée à mettre à jour.' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'Utilisateur introuvable.' });
+    }
+
+    res.json({ message: 'Profil mis à jour', user: updatedUser.toJSON() });
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du profil :', error);
+    res.status(500).json({ error: 'Impossible de mettre à jour le profil pour le moment.' });
   }
 });
 
