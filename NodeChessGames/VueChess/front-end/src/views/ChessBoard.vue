@@ -289,7 +289,7 @@ const computeLegalMoves = (row: number, col: number, piece: Piece) => {
 }
 
 const renderPiece = (color: Color, type: Piece['type']) => {
-  const glyphs: Record<Piece['type'], string> = {
+  const glyphsBlack: Record<Piece['type'], string> = {
     p: '\u265f',
     r: '\u265c',
     n: '\u265e',
@@ -297,8 +297,15 @@ const renderPiece = (color: Color, type: Piece['type']) => {
     q: '\u265b',
     k: '\u265a',
   }
-  const glyph = glyphs[type]
-  return color === 'white' ? glyph.toUpperCase() : glyph
+  const glyphsWhite: Record<Piece['type'], string> = {
+    p: '\u2659',
+    r: '\u2656',
+    n: '\u2658',
+    b: '\u2657',
+    q: '\u2655',
+    k: '\u2654',
+  }
+  return color === 'white' ? glyphsWhite[type] : glyphsBlack[type]
 }
 
 const squareClass = (rowIndex: number, fileIndex: number, file: string, rank: number) => {
@@ -404,13 +411,13 @@ onMounted(() => {
   grid-template-rows: var(--edge) repeat(8, var(--case)) var(--edge);
   width: var(--board-size);
   height: var(--board-size);
-  background: linear-gradient(155deg, rgba(12, 16, 25, 0.85), rgba(9, 12, 20, 0.95));
+  background: linear-gradient(145deg, rgba(16, 34, 78, 0.75), rgba(12, 22, 45, 0.95));
   border: 1px solid var(--border-strong);
-  border-radius: 18px;
+  border-radius: 22px;
   overflow: hidden;
   box-shadow:
-    var(--shadow-strong),
-    0 0 18px rgba(255, 45, 85, 0.18);
+    0 14px 34px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(62, 205, 210, 0.24);
 }
 
 .case {
@@ -426,7 +433,7 @@ onMounted(() => {
     transform 0.08s ease,
     box-shadow 0.2s ease,
     background 0.2s ease;
-  color: #f7f3ed;
+  color: #fdf4ff;
 }
 
 .case:hover {
@@ -435,32 +442,32 @@ onMounted(() => {
 }
 
 .clair {
-  background: #0f1725;
+  background: rgba(46, 209, 197, 0.12);
 }
 
 .obscur {
-  background: #0a0f18;
+  background: rgba(6, 12, 28, 0.7);
 }
 
 .selected {
   box-shadow:
     inset 0 0 0 3px var(--accent),
-    0 0 18px rgba(255, 45, 85, 0.35);
-  background: linear-gradient(145deg, rgba(255, 45, 85, 0.25), rgba(15, 18, 28, 0.9));
+    0 0 18px rgba(46, 209, 197, 0.28);
+  background: linear-gradient(145deg, rgba(46, 209, 197, 0.18), rgba(16, 34, 78, 0.8));
 }
 
 .playable {
   outline: 2px dashed var(--accent);
-  background: radial-gradient(circle at center, rgba(255, 45, 85, 0.18) 0%, transparent 65%);
+  background: radial-gradient(circle at center, rgba(46, 209, 197, 0.2) 0%, transparent 65%);
 }
 
 .noir {
-  background: #090e16;
+  background: transparent;
   color: var(--text-muted);
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   font-weight: 700;
   letter-spacing: 0.5px;
 }
