@@ -1,5 +1,5 @@
 <template>
-  <main class="container" v-if="currentMatch">
+  <main class="container game-layout" v-if="currentMatch">
     <h1>Partie locale</h1>
 
     <section class="card board-panel">
@@ -13,51 +13,55 @@
           <p class="player">{{ blackPlayer }}</p>
         </div>
       </div>
-      <p class="helper">
-       
-      </p>
-      <div class="board-actions">
-        <button class="btn" type="button" @click="resetGame">Réinitialiser</button>
-        <button class="btn-outline" type="button" @click="backToList">Retour à la liste</button>
-      </div>
       <p class="status">{{ statusMessage }}</p>
+      <div class="board-actions">
+        <button class="btn" type="button" @click="resetGame">Reinitialiser</button>
+        <button class="btn-outline" type="button" @click="backToList">Retour a la liste</button>
+      </div>
     </section>
 
-    <div class="board-wrap">
-      <div id="plateau">
-        <div class="noir corner"></div>
-        <div v-for="file in files" :key="`top-${file}`" class="noir top">
-          {{ file.toUpperCase() }}
-        </div>
-        <div class="noir corner"></div>
-
-        <template v-for="(rankRow, rowIndex) in board" :key="`rank-${ranks[rowIndex]}`">
-          <div class="noir side">{{ ranks[rowIndex] }}</div>
-
-          <button
-            v-for="(square, fileIndex) in rankRow"
-            :key="`${files[fileIndex]}${ranks[rowIndex]}`"
-            class="case"
-            :class="squareClass(rowIndex, fileIndex, files[fileIndex]!, ranks[rowIndex]!)"
-            @click="selectSquare(rowIndex, fileIndex)"
-          >
-            <span v-if="square">{{ renderPiece(square.color, square.type) }}</span>
-          </button>
-
-          <div class="noir side">{{ ranks[rowIndex] }}</div>
-        </template>
-
-        <div class="noir corner"></div>
-        <div v-for="file in files" :key="`bottom-${file}`" class="noir bottom">
-          {{ file.toUpperCase() }}
-        </div>
-        <div class="noir corner"></div>
+    <section class="card board-shell">
+      <div class="board-shell__header">
+        <p class="section-title">Plateau</p>
+        <p class="helper">Selectionne une piece puis joue sur les cases mises en surbrillance.</p>
       </div>
-    </div>
+
+      <div class="board-wrap">
+        <div id="plateau">
+          <div class="noir corner"></div>
+          <div v-for="file in files" :key="`top-${file}`" class="noir top">
+            {{ file.toUpperCase() }}
+          </div>
+          <div class="noir corner"></div>
+
+          <template v-for="(rankRow, rowIndex) in board" :key="`rank-${ranks[rowIndex]}`">
+            <div class="noir side">{{ ranks[rowIndex] }}</div>
+
+            <button
+              v-for="(square, fileIndex) in rankRow"
+              :key="`${files[fileIndex]}${ranks[rowIndex]}`"
+              class="case"
+              :class="squareClass(rowIndex, fileIndex, files[fileIndex]!, ranks[rowIndex]!)"
+              @click="selectSquare(rowIndex, fileIndex)"
+            >
+              <span v-if="square">{{ renderPiece(square.color, square.type) }}</span>
+            </button>
+
+            <div class="noir side">{{ ranks[rowIndex] }}</div>
+          </template>
+
+          <div class="noir corner"></div>
+          <div v-for="file in files" :key="`bottom-${file}`" class="noir bottom">
+            {{ file.toUpperCase() }}
+          </div>
+          <div class="noir corner"></div>
+        </div>
+      </div>
+    </section>
   </main>
   <main v-else class="container">
     <h1>Partie introuvable</h1>
-    <p>La partie demandée n'existe plus. Retourne à la liste.</p>
+    <p>La partie demandee n'existe plus. Retourne a la liste.</p>
     <button class="btn" type="button" @click="backToList">Retour</button>
   </main>
 </template>
@@ -88,14 +92,14 @@ const whitePlayer = computed(() => {
   if (!currentMatch.value) return 'Blanc'
   return currentMatch.value.color === 'White'
     ? currentMatch.value.host
-    : (currentMatch.value.opponent ?? 'Invité')
+    : (currentMatch.value.opponent ?? 'Invite')
 })
 
 const blackPlayer = computed(() => {
   if (!currentMatch.value) return 'Noir'
   return currentMatch.value.color === 'Black'
     ? currentMatch.value.host
-    : (currentMatch.value.opponent ?? 'Invité')
+    : (currentMatch.value.opponent ?? 'Invite')
 })
 
 const statusMessage = computed(() => {
@@ -286,12 +290,12 @@ const computeLegalMoves = (row: number, col: number, piece: Piece) => {
 
 const renderPiece = (color: Color, type: Piece['type']) => {
   const glyphs: Record<Piece['type'], string> = {
-    p: '♟',
-    r: '♜',
-    n: '♞',
-    b: '♝',
-    q: '♛',
-    k: '♚',
+    p: '\u265f',
+    r: '\u265c',
+    n: '\u265e',
+    b: '\u265d',
+    q: '\u265b',
+    k: '\u265a',
   }
   const glyph = glyphs[type]
   return color === 'white' ? glyph.toUpperCase() : glyph
@@ -330,14 +334,23 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 .board-panel {
-  margin-bottom: 20px;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .players {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
 }
 
 .player {
@@ -351,10 +364,10 @@ onMounted(() => {
 }
 
 .board-actions {
-  margin: 12px 0 16px;
+  margin: 4px 0 4px;
   display: flex;
-  gap: 12px;
-  justify-content: flex-start;
+  gap: 10px;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -362,18 +375,35 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--text-main);
+  text-align: center;
+}
+
+.board-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.board-shell__header {
+  width: 100%;
 }
 
 .board-wrap {
-  display: grid;
-  place-items: center;
-  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 #plateau {
-  display: flex;
-  width: 420px;
-  flex-flow: row wrap;
+  --board-size: min(96vw, 540px);
+  --edge: clamp(12px, calc(var(--board-size) * 0.05), 22px);
+  --case: calc((var(--board-size) - 2 * var(--edge)) / 8);
+  display: grid;
+  grid-template-columns: var(--edge) repeat(8, var(--case)) var(--edge);
+  grid-template-rows: var(--edge) repeat(8, var(--case)) var(--edge);
+  width: var(--board-size);
+  height: var(--board-size);
   background: linear-gradient(155deg, rgba(12, 16, 25, 0.85), rgba(9, 12, 20, 0.95));
   border: 1px solid var(--border-strong);
   border-radius: 18px;
@@ -382,12 +412,12 @@ onMounted(() => {
 }
 
 .case {
-  width: 48px;
-  height: 48px;
+  width: var(--case);
+  height: var(--case);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 190%;
+  font-size: clamp(1.6rem, calc(var(--case) * 0.75), 2.1rem);
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.03);
   transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
@@ -429,20 +459,28 @@ onMounted(() => {
 }
 
 .side {
-  width: 18px;
-  height: 48px;
-  font-size: 11px;
+  width: var(--edge);
+  height: var(--case);
+  font-size: clamp(10px, calc(var(--edge) * 0.6), 12px);
 }
 
 .top,
 .bottom {
-  width: 48px;
-  height: 18px;
-  font-size: 11px;
+  width: var(--case);
+  height: var(--edge);
+  font-size: clamp(10px, calc(var(--edge) * 0.6), 12px);
 }
 
 .corner {
-  width: 18px;
-  height: 18px;
+  width: var(--edge);
+  height: var(--edge);
+}
+
+@media (max-width: 640px) {
+  .board-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>
