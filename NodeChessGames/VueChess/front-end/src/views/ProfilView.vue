@@ -79,7 +79,7 @@ const avatarPreview = ref<string>(user.value.avatar || '')
 const fileInput = ref<HTMLInputElement | null>(null)
 
 const avatarLetter = computed(() =>
-  (user.value.pseudo || user.value.email || '?').charAt(0).toUpperCase()
+  (user.value.pseudo || user.value.email || '?').charAt(0).toUpperCase(),
 )
 
 const openFilePicker = () => {

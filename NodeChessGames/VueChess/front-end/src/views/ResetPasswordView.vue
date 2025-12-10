@@ -18,9 +18,7 @@
       />
 
       <p v-if="error" class="feedback error-msg">{{ error }}</p>
-      <p v-if="success" class="feedback success-msg">
-        Mot de passe change, redirection...
-      </p>
+      <p v-if="success" class="feedback success-msg">Mot de passe change, redirection...</p>
 
       <div class="row" style="margin-top: 14px; justify-content: center">
         <button class="btn" type="submit">Valider</button>

@@ -7,7 +7,7 @@ export interface UserProfile {
   email?: string
   nom?: string
   prenom?: string
-   avatar?: string
+  avatar?: string
 }
 
 export const useUserStore = defineStore('user', () => {

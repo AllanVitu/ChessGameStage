@@ -408,7 +408,9 @@ onMounted(() => {
   border: 1px solid var(--border-strong);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: var(--shadow-strong), 0 0 18px rgba(255, 45, 85, 0.18);
+  box-shadow:
+    var(--shadow-strong),
+    0 0 18px rgba(255, 45, 85, 0.18);
 }
 
 .case {
@@ -420,7 +422,10 @@ onMounted(() => {
   font-size: clamp(1.6rem, calc(var(--case) * 0.75), 2.1rem);
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
   color: #f7f3ed;
 }
 
@@ -438,7 +443,9 @@ onMounted(() => {
 }
 
 .selected {
-  box-shadow: inset 0 0 0 3px var(--accent), 0 0 18px rgba(255, 45, 85, 0.35);
+  box-shadow:
+    inset 0 0 0 3px var(--accent),
+    0 0 18px rgba(255, 45, 85, 0.35);
   background: linear-gradient(145deg, rgba(255, 45, 85, 0.25), rgba(15, 18, 28, 0.9));
 }
 

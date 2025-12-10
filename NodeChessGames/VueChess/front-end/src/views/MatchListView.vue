@@ -13,9 +13,7 @@
         </select>
         <button class="btn" type="button" @click="createLocalMatch">Lancer la partie</button>
       </div>
-      <p class="helper">
-      
-      </p>
+      <p class="helper"></p>
     </section>
 
     <div class="btn-outline-top">
@@ -111,12 +109,17 @@ const joinAndPlay = (match: Match) => {
   overflow: hidden;
   align-items: center;
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
-  transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
 .match-row:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.42), 0 0 20px rgba(255, 45, 85, 0.2);
+  box-shadow:
+    0 18px 32px rgba(0, 0, 0, 0.42),
+    0 0 20px rgba(255, 45, 85, 0.2);
   transform: translateY(-2px);
 }
 
@@ -162,7 +165,9 @@ const joinAndPlay = (match: Match) => {
   justify-content: center;
   font-weight: 700;
   font-size: 0.95rem;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none;
