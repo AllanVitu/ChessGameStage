@@ -1,6 +1,6 @@
 <template>
   <main class="container">
-    <h1>Réinitialisation</h1>
+    <h1>Reinitialisation</h1>
     <form class="card" @submit.prevent="resetPwd">
       <input
         v-model="newPassword"
@@ -17,9 +17,9 @@
         placeholder="Confirmer nouveau mot de passe"
       />
 
-      <p v-if="error" style="color: #ff6b6b; text-align: center">{{ error }}</p>
-      <p v-if="success" style="color: #4cd137; text-align: center">
-        Mot de passe changé ! Redirection...
+      <p v-if="error" class="feedback error-msg">{{ error }}</p>
+      <p v-if="success" class="feedback success-msg">
+        Mot de passe change, redirection...
       </p>
 
       <div class="row" style="margin-top: 14px; justify-content: center">
@@ -40,7 +40,7 @@ const confirmNewPassword = ref('')
 const error = ref('')
 const success = ref(false)
 
-// Récupération de l'email depuis l'URL (lien simulé dans le backend)
+// Recuperation de l'email depuis l'URL (lien simule dans le backend)
 const email = route.query.email
 
 const resetPwd = async () => {

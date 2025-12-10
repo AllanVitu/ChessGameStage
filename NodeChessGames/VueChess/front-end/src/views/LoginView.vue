@@ -17,7 +17,7 @@
         />
       </div>
 
-      <p v-if="error" class="error-msg">{{ error }}</p>
+      <p v-if="error" class="feedback error-msg">{{ error }}</p>
 
       <div class="row" style="margin-top: 14px; justify-content: center; gap: 10px">
         <button class="btn" type="submit" :disabled="loading">
@@ -83,11 +83,3 @@ const continueOffline = () => {
   router.push('/match-list')
 }
 </script>
-
-<style scoped>
-.error-msg {
-  color: #ff6b6b;
-  text-align: center;
-  margin-top: 10px;
-}
-</style>

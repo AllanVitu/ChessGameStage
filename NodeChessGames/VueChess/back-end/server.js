@@ -1,17 +1,19 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.SECRET_KEY || 'mon_secret_super_securise';
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/chess_game';
-const DB_NAME = process.env.MONGO_DB_NAME;
+const DB_NAME = process.env.MONGO_DB_NAME || 'chess_game';
 
-// --- BASE DE DONNÉES ---
+// --- BASE DE DONNEES ---
 mongoose
   .connect(MONGO_URI, { dbName: DB_NAME })
   .then(() => {
@@ -81,7 +83,7 @@ app.post('/api/register', async (req, res) => {
     const token = generateToken(newUser);
     res.json({ message: 'Inscription réussie', token, user: newUser.toJSON() });
   } catch (error) {
-    console.error('Erreur lors de l\'inscription :', error);
+    console.error("Erreur lors de l'inscription :", error);
     res.status(500).json({ error: 'Impossible de créer le compte pour le moment.' });
   }
 });

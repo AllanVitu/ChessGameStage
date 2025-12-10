@@ -26,8 +26,8 @@
         />
       </div>
 
-      <p v-if="error" class="error-msg">{{ error }}</p>
-      <p v-if="success" class="success-msg">Mot de passe mis à jour.</p>
+      <p v-if="error" class="feedback error-msg">{{ error }}</p>
+      <p v-if="success" class="feedback success-msg">Mot de passe mis a jour.</p>
 
       <div class="row" style="margin-top: 14px; justify-content: center">
         <button class="btn" type="submit">Enregistrer</button>
@@ -59,15 +59,3 @@ const changePassword = async () => {
   success.value = true
 }
 </script>
-
-<style scoped>
-.error-msg {
-  color: #ff6b6b;
-  text-align: center;
-}
-
-.success-msg {
-  color: #4cd137;
-  text-align: center;
-}
-</style>

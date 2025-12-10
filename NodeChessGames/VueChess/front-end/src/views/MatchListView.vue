@@ -73,60 +73,75 @@ const joinAndPlay = (match: Match) => {
 .btn-outline-top {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: 16px;
+  margin: 6px 0 22px;
+  flex-wrap: wrap;
 }
 
 .btn-nav {
-  background: transparent;
+  background: rgba(255, 45, 85, 0.12);
   border: 1px solid var(--border);
-  color: var(--text-muted);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  display: flex;
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  transition: all 0.2s ease;
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
 }
 
 .btn-nav:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-main);
-  border-color: var(--text-main);
+  background: var(--accent-soft);
+  color: #ffffff;
+  border-color: var(--border-strong);
+  box-shadow: var(--glow);
 }
 
 .match-row {
   display: grid;
   grid-template-columns: 1.2fr 0.8fr 1.2fr 0.8fr;
-  background-color: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.03), rgba(14, 18, 27, 0.7));
   border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 12px;
+  border-radius: 14px;
+  margin-bottom: 14px;
   overflow: hidden;
   align-items: center;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+  transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.match-row:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.42), 0 0 20px rgba(255, 45, 85, 0.2);
+  transform: translateY(-2px);
 }
 
 .cell {
-  padding: 15px 10px;
-  font-size: 0.95rem;
+  padding: 16px 12px;
+  font-size: 0.98rem;
   display: flex;
   align-items: center;
 }
 
 .pseudo {
-  font-weight: 600;
+  font-weight: 700;
   padding-left: 15px;
   color: var(--text-main);
+  letter-spacing: 0.3px;
 }
 
 .text-white {
-  color: #fff;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  color: #f7f3ed;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
 }
 
 .text-black {
-  color: #000000;
-  font-weight: bold;
+  color: #d7dbe2;
+  font-weight: 700;
 }
 
 .opponent {
@@ -139,22 +154,35 @@ const joinAndPlay = (match: Match) => {
 }
 
 .join-btn {
-  background-color: var(--accent);
+  background: linear-gradient(120deg, var(--accent) 0%, #ff4b3e 60%, var(--accent-2) 100%);
   color: white;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: background 0.2s;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none;
   cursor: pointer;
+  border-left: 1px solid var(--border-strong);
+  box-shadow: 0 12px 24px rgba(255, 45, 85, 0.25);
 }
 
 .join-btn:hover {
-  background-color: #0b5ed7;
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(255, 45, 85, 0.3);
+}
+
+@media (max-width: 780px) {
+  .match-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .join {
+    grid-column: 1 / -1;
+  }
 }
 </style>

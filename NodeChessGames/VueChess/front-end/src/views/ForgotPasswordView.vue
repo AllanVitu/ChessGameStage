@@ -7,7 +7,7 @@
       </p>
       <input v-model="email" class="input" type="email" required placeholder="Votre E-Mail" />
 
-      <p v-if="message" style="color: #4cd137; text-align: center">{{ message }}</p>
+      <p v-if="message" class="feedback success-msg">{{ message }}</p>
 
       <div class="row" style="margin-top: 14px; justify-content: center">
         <button class="btn" type="submit">Envoyer</button>

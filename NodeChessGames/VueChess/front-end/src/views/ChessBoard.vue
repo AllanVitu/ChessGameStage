@@ -331,24 +331,27 @@ onMounted(() => {
 
 <style scoped>
 .board-panel {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .players {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .player {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border);
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .board-actions {
-  margin: 10px 0 14px;
+  margin: 12px 0 16px;
   display: flex;
   gap: 12px;
   justify-content: flex-start;
@@ -356,76 +359,90 @@ onMounted(() => {
 }
 
 .status {
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-main);
 }
 
 .board-wrap {
   display: grid;
   place-items: center;
+  margin-top: 10px;
 }
 
 #plateau {
   display: flex;
-  width: 380px;
+  width: 420px;
   flex-flow: row wrap;
+  background: linear-gradient(155deg, rgba(12, 16, 25, 0.85), rgba(9, 12, 20, 0.95));
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-strong), 0 0 18px rgba(255, 45, 85, 0.18);
 }
 
 .case {
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 190%;
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: transform 0.08s ease, box-shadow 0.2s ease, background 0.2s ease;
+  color: #f7f3ed;
 }
 
 .case:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .clair {
-  background: #adb5bd;
-  color: #000;
+  background: #0f1725;
 }
 
 .obscur {
-  background: #495057;
-  color: #fff;
+  background: #0a0f18;
 }
 
 .selected {
-  box-shadow: inset 0 0 0 3px var(--accent);
+  box-shadow: inset 0 0 0 3px var(--accent), 0 0 18px rgba(255, 45, 85, 0.35);
+  background: linear-gradient(145deg, rgba(255, 45, 85, 0.25), rgba(15, 18, 28, 0.9));
 }
 
 .playable {
-  outline: 2px dashed #0b5ed7;
+  outline: 2px dashed var(--accent);
+  background: radial-gradient(circle at center, rgba(255, 45, 85, 0.18) 0%, transparent 65%);
 }
 
 .noir {
-  background: #000;
-  color: #fff;
+  background: #090e16;
+  color: var(--text-muted);
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .side {
-  width: 10px;
-  height: 45px;
-  font-size: 10px;
+  width: 18px;
+  height: 48px;
+  font-size: 11px;
 }
 
 .top,
 .bottom {
-  width: 45px;
-  height: 10px;
-  font-size: 10px;
+  width: 48px;
+  height: 18px;
+  font-size: 11px;
 }
 
 .corner {
-  width: 10px;
-  height: 10px;
+  width: 18px;
+  height: 18px;
 }
 </style>

@@ -17,7 +17,7 @@
         <input v-model="user.email" class="input" placeholder="E-mail" />
       </div>
 
-      <p v-if="message" style="color: #4cd137; text-align: center">{{ message }}</p>
+      <p v-if="message" class="feedback success-msg">{{ message }}</p>
 
       <div
         class="row"
