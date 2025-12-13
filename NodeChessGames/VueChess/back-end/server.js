@@ -9,24 +9,59 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SECRET_KEY = process.env.SECRET_KEY || 'mon_secret_super_securise';
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/chess_game';
-const DB_NAME = process.env.MONGO_DB_NAME || 'chess_game';
+const SECRET_KEY = process.env.SECRET_KEY;
+const MONGO_URI = process.env.MONGO_URI;
+const DB_NAME = process.env.MONGO_DB_NAME;
 const STATE_LABELS = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+const REQUIRED_ENV = ['MONGO_URI', 'MONGO_DB_NAME', 'SECRET_KEY'];
+const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
+
+if (missingEnv.length) {
+  console.error(`Variables d'environnement manquantes: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
+// Gestion du CORS avec liste blanche optionnelle
+const allowedOrigins =
+  process.env.ALLOWED_ORIGINS?.split(',')
+    .map((o) => o.trim())
+    .filter(Boolean) || [];
+app.use(
+  cors({
+    origin: allowedOrigins.length ? allowedOrigins : '*',
+    credentials: true,
+  }),
+);
+
+// Autoriser un JSON plus gros pour accepter les images encodees en base64
+app.use(express.json({ limit: '4mb' }));
 
 // --- BASE DE DONNEES ---
-mongoose
-  .connect(MONGO_URI, { dbName: DB_NAME })
-  .then(() => {
+const connectWithRetry = async (attempt = 1) => {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      dbName: DB_NAME,
+      serverSelectionTimeoutMS: 5000,
+    });
     console.log('Connecte a MongoDB');
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error('Connexion a MongoDB echouee :', err.message);
-    process.exit(1);
-  });
+  } catch (err) {
+    const nextAttempt = attempt + 1;
+    const retryDelay = Math.min(10000, 2000 * attempt);
+    console.error(`Connexion a MongoDB echouee (tentative ${attempt}) :`, err.message);
+    if (nextAttempt <= 5) {
+      console.log(`Nouvelle tentative dans ${retryDelay / 1000}s...`);
+      setTimeout(() => connectWithRetry(nextAttempt), retryDelay);
+    } else {
+      console.error('Echec apres plusieurs tentatives, extinction du serveur.');
+      process.exit(1);
+    }
+  }
+};
+
+connectWithRetry();
 
 mongoose.connection.on('error', (err) => {
   console.error('Erreur MongoDB :', err.message);
@@ -58,10 +93,6 @@ userSchema.set('toJSON', {
 });
 
 const User = mongoose.model('User', userSchema);
-
-app.use(cors());
-// Autoriser un JSON plus gros pour accepter les images encodees en base64
-app.use(express.json({ limit: '4mb' }));
 
 const generateToken = (user) =>
   jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: '24h' });

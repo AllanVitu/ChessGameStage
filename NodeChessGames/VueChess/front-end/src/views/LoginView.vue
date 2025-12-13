@@ -23,12 +23,10 @@
         <button class="btn" type="submit" :disabled="loading">
           {{ loading ? 'Connexion...' : 'Se connecter' }}
         </button>
-        <router-link to="/register" class="btn-outline">Créer un compte</router-link>
+        <router-link to="/register" class="btn-outline">Creer un compte</router-link>
       </div>
 
       <div style="text-align: center; margin-top: 15px">
-        <router-link class="mdp-oublie" to="/forgot-password">Mot de passe oublié ?</router-link>
-        <p class="helper"></p>
         <button type="button" class="btn-outline2" @click="continueOffline">
           Mode local (sans API)
         </button>
@@ -42,6 +40,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 const email = ref('')
 const password = ref('')
 const error = ref('')
@@ -54,7 +53,7 @@ const handleLogin = async () => {
   error.value = ''
   loading.value = true
   try {
-    const response = await fetch('http://localhost:3000/api/login', {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: email.value, password: password.value }),
@@ -77,7 +76,7 @@ const handleLogin = async () => {
 }
 
 const continueOffline = () => {
-  const pseudo = email.value ? email.value.split('@')[0] : 'Invité'
+  const pseudo = email.value ? email.value.split('@')[0] : 'Invite'
   userStore.setToken(`local-${Date.now()}`)
   userStore.setUser({ pseudo, email: email.value || 'local@offline' })
   router.push('/match-list')
