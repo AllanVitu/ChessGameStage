@@ -26,7 +26,7 @@
               style="display: none"
               @change="onFileChange"
             />
-            <button class="btn-outline2" type="button" @click="openFilePicker">
+            <button class="btn-outline2" type="button" @click="openFilePicker" :disabled="!hasAccount">
               Choisir une image
             </button>
             <span class="helper">PNG ou JPEG, 1.5 Mo max</span>
@@ -40,7 +40,16 @@
         <input v-model="user.email" class="input" placeholder="E-mail" />
       </div>
 
-      <p v-if="message" class="feedback success-msg">{{ message }}</p>
+      <p
+        v-if="message"
+        class="feedback"
+        :class="messageType === 'success' ? 'success-msg' : 'error-msg'"
+      >
+        {{ message }}
+      </p>
+      <p v-if="!hasAccount" class="feedback error-msg">
+        Connecte toi ou cree un compte pour sauvegarder le profil et l avatar.
+      </p>
 
       <div
         class="row"
@@ -57,7 +66,7 @@
           <router-link class="btn-outline" to="/match-list" style="text-decoration: none"
             >Annuler</router-link
           >
-          <button class="btn" @click="updateProfile">Valider</button>
+          <button class="btn" @click="updateProfile" :disabled="!hasAccount">Valider</button>
         </div>
 
         <button class="btn" style="background-color: #ff6b6b" @click="logout">Deconnexion</button>
@@ -75,33 +84,51 @@ import type { UserProfile } from '../stores/user'
 const userStore = useUserStore()
 const user = ref<UserProfile>({ ...(userStore.user || {}) })
 const message = ref('')
+const messageType = ref<'success' | 'error'>('success')
 const avatarPreview = ref<string>(user.value.avatar || '')
 const fileInput = ref<HTMLInputElement | null>(null)
+const hasAccount = computed(() => Boolean(user.value.id))
+
+const setMessage = (text: string, type: 'success' | 'error' = 'success') => {
+  message.value = text
+  messageType.value = type
+}
 
 const avatarLetter = computed(() =>
   (user.value.pseudo || user.value.email || '?').charAt(0).toUpperCase(),
 )
 
 const openFilePicker = () => {
+  if (!hasAccount.value) {
+    setMessage('Connecte toi pour ajouter un avatar.', 'error')
+    return
+  }
   fileInput.value?.click()
 }
 
 const onFileChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
+
+  if (!hasAccount.value) {
+    setMessage('Impossible de charger un avatar sans compte.', 'error')
+    target.value = ''
+    return
+  }
+
   if (!file) return
 
   const validTypes = ['image/png', 'image/jpeg']
   const MAX_SIZE = 1.5 * 1024 * 1024
 
   if (!validTypes.includes(file.type)) {
-    message.value = 'Formats acceptes: PNG ou JPEG'
+    setMessage('Formats acceptes: PNG ou JPEG', 'error')
     target.value = ''
     return
   }
 
   if (file.size > MAX_SIZE) {
-    message.value = 'Image trop volumineuse (max 1.5 Mo)'
+    setMessage('Image trop volumineuse (max 1.5 Mo)', 'error')
     target.value = ''
     return
   }
@@ -111,17 +138,16 @@ const onFileChange = (event: Event) => {
     const result = reader.result as string
     user.value.avatar = result
     avatarPreview.value = result
-    message.value = 'Avatar charge (pensez a valider)'
+    setMessage('Avatar charge (pensez a valider)')
   }
   reader.readAsDataURL(file)
 }
 
 const updateProfile = async () => {
-  message.value = ''
+  setMessage('')
 
-  if (!user.value.id) {
-    message.value = 'Profil local mis a jour (non synchronise)'
-    userStore.setUser(user.value)
+  if (!hasAccount.value) {
+    setMessage('Aucun compte detecte : connecte toi ou cree un compte pour sauvegarder.', 'error')
     return
   }
 
@@ -135,14 +161,14 @@ const updateProfile = async () => {
     const data = await response.json()
 
     if (response.ok) {
-      message.value = 'Profil mis a jour'
+      setMessage('Profil mis a jour')
       userStore.setUser(data.user || user.value)
       avatarPreview.value = data.user?.avatar || user.value.avatar || ''
     } else {
-      message.value = data.error || 'Erreur lors de la mise a jour du profil'
+      setMessage(data.error || 'Erreur lors de la mise a jour du profil', 'error')
     }
   } catch (error) {
-    message.value = 'Impossible de joindre le serveur. Profil non synchronise.'
+    setMessage('Impossible de joindre le serveur. Profil non synchronise.', 'error')
   }
 }
 

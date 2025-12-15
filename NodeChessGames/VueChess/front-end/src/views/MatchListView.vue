@@ -4,10 +4,9 @@
 
     <header class="topbar">
       <div class="brand">
-        <span class="logo-dot">NC</span>
+        <span class="logo-dot">P1</span>
         <div>
-          <p class="brand-name">Nova Chess</p>
-          <p class="brand-sub">Lobby pret a jouer</p>
+          <p class="brand-name">Player</p>
         </div>
       </div>
       <div class="top-actions">
