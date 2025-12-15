@@ -40,11 +40,7 @@
       </div>
 
       <div class="glass-card creation-card">
-<<<<<<< HEAD
         <div class="row" style="justify-content: space-between; align-items: center; gap: 15px">
-=======
-        <div class="row" style="justify-content: space-between; align-items: center; gap: 10px">
->>>>>>> 023902cdebd28c1db0cbdfe19f0a587eaa1d50ac
           <p class="section-title">Creer une partie</p>
           <div class="mode-switch">
             <button
@@ -175,8 +171,10 @@ const createLocalMatch = () => {
 }
 
 const joinAndPlay = (match: Match) => {
-  const opponent = match.opponent || prompt("Pseudo de l'adversaire ?", 'Invite') || 'Invite'
-  matchesStore.joinMatch(match.id, opponent)
+  if (match.mode !== 'bot') {
+    const opponent = match.opponent || prompt("Pseudo de l'adversaire ?", 'Invite') || 'Invite'
+    matchesStore.joinMatch(match.id, opponent)
+  }
   router.push({ name: 'game', params: { id: match.id } })
 }
 </script>
