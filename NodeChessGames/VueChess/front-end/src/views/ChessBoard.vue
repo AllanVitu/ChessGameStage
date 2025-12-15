@@ -1,6 +1,6 @@
 <template>
   <main class="container game-layout" v-if="currentMatch">
-    <h1>Partie locale</h1>
+    <h1>{{ currentMatch.mode === 'bot' ? 'Partie vs IA' : 'Partie locale' }}</h1>
 
     <section class="card board-panel">
       <div class="players">
@@ -14,8 +14,14 @@
         </div>
       </div>
       <p class="status">{{ statusMessage }}</p>
+      <p v-if="currentMatch.mode === 'bot'" class="helper ai-label">
+        IA {{ currentMatch.botLevel ?? 'normal' }} ({{ currentMatch.color === 'White' ? 'vous' : 'bot' }} joue les
+        blancs)
+      </p>
       <div class="board-actions">
-        <button class="btn" type="button" @click="resetGame">Reinitialiser</button>
+        <button class="btn" type="button" @click="resetGame" :disabled="isBotThinking">Reinitialiser</button>
+        <button class="btn-outline danger" type="button" @click="resign" :disabled="isGameOver">Abandonner</button>
+        <button class="btn-outline2" type="button" @click="declareDraw" :disabled="isGameOver">Match nul</button>
         <button class="btn-outline" type="button" @click="backToList">Retour a la liste</button>
       </div>
     </section>
@@ -70,8 +76,10 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMatchesStore, type Board, type Piece } from '../stores/matches'
+import { useUserStore } from '../stores/user'
 
 type Color = 'white' | 'black'
+type Move = { from: { row: number; col: number }; to: { row: number; col: number } }
 
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'] as const
 const ranks = [8, 7, 6, 5, 4, 3, 2, 1]
@@ -79,41 +87,58 @@ const ranks = [8, 7, 6, 5, 4, 3, 2, 1]
 const route = useRoute()
 const router = useRouter()
 const matchesStore = useMatchesStore()
+const userStore = useUserStore()
 const matchId = route.params.id as string
 
 const board = ref<Board>([])
 const turn = ref<Color>('white')
 const selected = ref<{ row: number; col: number } | null>(null)
 const legalMoves = ref<string[]>([])
+const isBotThinking = ref(false)
+const statusNote = ref('')
 
 const currentMatch = computed(() => matchesStore.getMatch(matchId))
+const humanColor = computed<Color | null>(() => {
+  if (!currentMatch.value) return null
+  return currentMatch.value.color === 'White' ? 'white' : 'black'
+})
+const botColor = computed<Color | null>(() => {
+  if (!currentMatch.value || currentMatch.value.mode !== 'bot') return null
+  return humanColor.value === 'white' ? 'black' : 'white'
+})
+const isGameOver = computed(() => currentMatch.value?.status === 'finished' || !!currentMatch.value?.result)
+const isBotTurn = computed(() => !!botColor.value && turn.value === botColor.value && !isGameOver.value)
 
 const whitePlayer = computed(() => {
   if (!currentMatch.value) return 'Blanc'
   return currentMatch.value.color === 'White'
     ? currentMatch.value.host
-    : (currentMatch.value.opponent ?? 'Invite')
+    : currentMatch.value.opponent ?? (currentMatch.value.mode === 'bot' ? 'IA' : 'Invite')
 })
 
 const blackPlayer = computed(() => {
   if (!currentMatch.value) return 'Noir'
   return currentMatch.value.color === 'Black'
     ? currentMatch.value.host
-    : (currentMatch.value.opponent ?? 'Invite')
+    : currentMatch.value.opponent ?? (currentMatch.value.mode === 'bot' ? 'IA' : 'Invite')
+})
+
+const winnerText = computed(() => {
+  const result = currentMatch.value?.result
+  if (!result) return ''
+  if (result.winner === 'draw') return 'Match nul'
+  return result.winner === 'white' ? 'Victoire des blancs' : 'Victoire des noirs'
 })
 
 const statusMessage = computed(() => {
+  if (isGameOver.value) return `${winnerText.value} (${currentMatch.value?.result?.reason ?? ''})`
+  if (statusNote.value) return statusNote.value
+  if (isBotThinking.value) return 'IA en reflexion...'
   return turn.value === 'white' ? 'Au tour des blancs' : 'Au tour des noirs'
 })
 
 const cloneBoard = (source: Board): Board =>
   source.map((row) => row.map((cell) => (cell ? { ...cell } : null)))
-
-const syncFromStore = () => {
-  if (!currentMatch.value) return
-  board.value = cloneBoard(currentMatch.value.board)
-  turn.value = currentMatch.value.turn
-}
 
 const positionToSquare = (row: number, col: number) => {
   const file = files[col]
@@ -122,105 +147,170 @@ const positionToSquare = (row: number, col: number) => {
   return `${file}${rank}`
 }
 
-const selectSquare = (row: number, col: number) => {
-  const piece = board.value[row]?.[col]
+const isInside = (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8
 
-  if (!selected.value) {
-    if (!piece || piece.color !== turn.value) return
-    selected.value = { row, col }
-    legalMoves.value = computeLegalMoves(row, col, piece)
-    return
-  }
-
-  const square = positionToSquare(row, col)
-  const isPlayable = legalMoves.value.includes(square)
-  if (selected.value.row === row && selected.value.col === col) {
-    selected.value = null
-    legalMoves.value = []
-    return
-  }
-
-  if (isPlayable) {
-    movePiece(selected.value.row, selected.value.col, row, col)
-    selected.value = null
-    legalMoves.value = []
-    return
-  }
-
-  if (piece && piece.color === turn.value) {
-    selected.value = { row, col }
-    legalMoves.value = computeLegalMoves(row, col, piece)
-  }
+const syncFromStore = () => {
+  if (!currentMatch.value) return
+  board.value = cloneBoard(currentMatch.value.board)
+  turn.value = currentMatch.value.turn
+  statusNote.value = ''
 }
 
-const movePiece = (fromRow: number, fromCol: number, toRow: number, toCol: number) => {
-  const piece = board.value[fromRow]?.[fromCol]
-  if (!piece) return
-  const newBoard = cloneBoard(board.value)
-  if (!newBoard[toRow] || !newBoard[fromRow]) return
-  newBoard[toRow][toCol] = piece
-  newBoard[fromRow][fromCol] = null
+const findKing = (state: Board, color: Color) => {
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = state[r]?.[c]
+      if (cell && cell.type === 'k' && cell.color === color) return { row: r, col: c }
+    }
+  }
+  return null
+}
 
-  if (piece.type === 'p') {
-    if ((piece.color === 'white' && toRow === 0) || (piece.color === 'black' && toRow === 7)) {
-      newBoard[toRow][toCol] = { ...piece, type: 'q' }
+const isSquareAttacked = (state: Board, row: number, col: number, byColor: Color) => {
+  const knightJumps: Array<[number, number]> = [
+    [2, 1],
+    [2, -1],
+    [-2, 1],
+    [-2, -1],
+    [1, 2],
+    [1, -2],
+    [-1, 2],
+    [-1, -2],
+  ]
+  for (const [dr, dc] of knightJumps) {
+    const r = row + dr
+    const c = col + dc
+    if (!isInside(r, c)) continue
+    const target = state[r]?.[c]
+    if (target && target.color === byColor && target.type === 'n') return true
+  }
+
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue
+      const r = row + dr
+      const c = col + dc
+      if (!isInside(r, c)) continue
+      const target = state[r]?.[c]
+      if (target && target.color === byColor && target.type === 'k') return true
     }
   }
 
-  board.value = newBoard
-  turn.value = turn.value === 'white' ? 'black' : 'white'
-  matchesStore.updateBoard(matchId, newBoard, turn.value)
-}
-
-const computeLegalMoves = (row: number, col: number, piece: Piece) => {
-  const moves: string[] = []
-  const direction = piece.color === 'white' ? -1 : 1
-
-  const isInside = (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8
-  const pushIfEmpty = (r: number, c: number) => {
-    if (!isInside(r, c)) return false
-    if (!board.value[r]) return false
-    if (board.value[r][c] === null) {
-      moves.push(positionToSquare(r, c))
-      return true
-    }
-    return false
+  const pawnDir = byColor === 'white' ? -1 : 1
+  const pawnRows = [
+    [row + pawnDir, col - 1],
+    [row + pawnDir, col + 1],
+  ]
+  for (const [r, c] of pawnRows) {
+    if (!isInside(r, c)) continue
+    const target = state[r]?.[c]
+    if (target && target.color === byColor && target.type === 'p') return true
   }
 
-  const pushIfCapture = (r: number, c: number) => {
-    if (!isInside(r, c) || !board.value[r]) return
-    const target = board.value[r][c]
-    if (target && target.color !== piece.color) moves.push(positionToSquare(r, c))
-  }
-
-  const pushLine = (deltaR: number, deltaC: number) => {
-    let r = row + deltaR
-    let c = col + deltaC
+  const lines: Array<[number, number]> = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ]
+  for (const [dr, dc] of lines) {
+    let r = row + dr
+    let c = col + dc
     while (isInside(r, c)) {
-      const rowData = board.value[r]
-      if (!rowData) break
-      const target = rowData[c]
+      const cell = state[r]?.[c]
+      if (!cell) {
+        r += dr
+        c += dc
+        continue
+      }
+      if (cell.color === byColor && (cell.type === 'r' || cell.type === 'q')) return true
+      break
+    }
+  }
+
+  const diagonals: Array<[number, number]> = [
+    [1, 1],
+    [1, -1],
+    [-1, 1],
+    [-1, -1],
+  ]
+  for (const [dr, dc] of diagonals) {
+    let r = row + dr
+    let c = col + dc
+    while (isInside(r, c)) {
+      const cell = state[r]?.[c]
+      if (!cell) {
+        r += dr
+        c += dc
+        continue
+      }
+      if (cell.color === byColor && (cell.type === 'b' || cell.type === 'q')) return true
+      break
+    }
+  }
+
+  return false
+}
+
+const isKingInCheck = (state: Board, color: Color) => {
+  const kingPos = findKing(state, color)
+  if (!kingPos) return false
+  const opponent = color === 'white' ? 'black' : 'white'
+  return isSquareAttacked(state, kingPos.row, kingPos.col, opponent)
+}
+
+const applyMoveOnBoard = (state: Board, move: Move) => {
+  const clone = cloneBoard(state)
+  const piece = clone[move.from.row]?.[move.from.col]
+  if (!piece) return clone
+  clone[move.to.row][move.to.col] = piece
+  clone[move.from.row][move.from.col] = null
+  if (
+    piece.type === 'p' &&
+    ((piece.color === 'white' && move.to.row === 0) || (piece.color === 'black' && move.to.row === 7))
+  ) {
+    clone[move.to.row][move.to.col] = { ...piece, type: 'q' }
+  }
+  return clone
+}
+
+const generatePseudoMoves = (state: Board, row: number, col: number, piece: Piece) => {
+  const moves: Array<[number, number]> = []
+  const pushLine = (dr: number, dc: number) => {
+    let r = row + dr
+    let c = col + dc
+    while (isInside(r, c)) {
+      const target = state[r]?.[c]
       if (!target) {
-        moves.push(positionToSquare(r, c))
+        moves.push([r, c])
       } else {
-        if (target.color !== piece.color) moves.push(positionToSquare(r, c))
+        if (target.color !== piece.color) moves.push([r, c])
         break
       }
-      r += deltaR
-      c += deltaC
+      r += dr
+      c += dc
     }
   }
 
   switch (piece.type) {
     case 'p': {
-      if (
-        pushIfEmpty(row + direction, col) &&
-        ((piece.color === 'white' && row === 6) || (piece.color === 'black' && row === 1))
-      ) {
-        pushIfEmpty(row + 2 * direction, col)
+      const dir = piece.color === 'white' ? -1 : 1
+      const startRow = piece.color === 'white' ? 6 : 1
+      const oneAhead = { r: row + dir, c: col }
+      if (isInside(oneAhead.r, oneAhead.c) && !state[oneAhead.r]?.[oneAhead.c]) moves.push([oneAhead.r, oneAhead.c])
+      const twoAhead = { r: row + 2 * dir, c: col }
+      if (row === startRow && !state[oneAhead.r]?.[oneAhead.c] && !state[twoAhead.r]?.[twoAhead.c]) {
+        moves.push([twoAhead.r, twoAhead.c])
       }
-      pushIfCapture(row + direction, col - 1)
-      pushIfCapture(row + direction, col + 1)
+      const captures = [
+        [row + dir, col - 1],
+        [row + dir, col + 1],
+      ]
+      for (const [r, c] of captures) {
+        if (!isInside(r, c)) continue
+        const target = state[r]?.[c]
+        if (target && target.color !== piece.color) moves.push([r, c])
+      }
       break
     }
     case 'r':
@@ -260,32 +350,52 @@ const computeLegalMoves = (row: number, col: number, piece: Piece) => {
         const r = row + dr
         const c = col + dc
         if (!isInside(r, c)) continue
-        const rowData = board.value[r]
-        if (!rowData) continue
-        const target = rowData[c]
-        if (!target || target.color !== piece.color) moves.push(positionToSquare(r, c))
+        const target = state[r]?.[c]
+        if (!target || target.color !== piece.color) moves.push([r, c])
       }
       break
     }
     case 'k': {
-      const steps: number[] = [-1, 0, 1]
-      for (const dr of steps) {
-        for (const dc of steps) {
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
           if (dr === 0 && dc === 0) continue
           const r = row + dr
           const c = col + dc
           if (!isInside(r, c)) continue
-          const rowData = board.value[r]
-          if (!rowData) continue
-          const target = rowData[c]
-          if (!target || target.color !== piece.color) moves.push(positionToSquare(r, c))
+          const target = state[r]?.[c]
+          if (!target || target.color !== piece.color) moves.push([r, c])
         }
       }
       break
     }
   }
-
   return moves
+}
+
+const legalMovesForPosition = (state: Board, row: number, col: number, piece: Piece) => {
+  const pseudo = generatePseudoMoves(state, row, col, piece)
+  const safe: string[] = []
+  for (const [r, c] of pseudo) {
+    const nextBoard = applyMoveOnBoard(state, { from: { row, col }, to: { row: r, col: c } })
+    if (!isKingInCheck(nextBoard, piece.color)) safe.push(positionToSquare(r, c))
+  }
+  return safe
+}
+
+const collectAllLegalMoves = (state: Board, color: Color): Move[] => {
+  const result: Move[] = []
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const piece = state[r]?.[c]
+      if (!piece || piece.color !== color) continue
+      const pseudo = generatePseudoMoves(state, r, c, piece)
+      for (const [nr, nc] of pseudo) {
+        const nextBoard = applyMoveOnBoard(state, { from: { row: r, col: c }, to: { row: nr, col: nc } })
+        if (!isKingInCheck(nextBoard, color)) result.push({ from: { row: r, col: c }, to: { row: nr, col: nc } })
+      }
+    }
+  }
+  return result
 }
 
 const renderPiece = (color: Color, type: Piece['type']) => {
@@ -317,6 +427,153 @@ const squareClass = (rowIndex: number, fileIndex: number, file: string, rank: nu
     [dark]: true,
     selected: isSelected,
     playable: legalMoves.value.includes(square),
+    disabled: isGameOver.value || isBotTurn.value,
+  }
+}
+
+const evaluateBoard = (state: Board, perspective: Color) => {
+  const values: Record<Piece['type'], number> = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 100 }
+  let score = 0
+  for (const row of state) {
+    for (const cell of row) {
+      if (!cell) continue
+      const value = values[cell.type]
+      score += cell.color === perspective ? value : -value
+    }
+  }
+  return score
+}
+
+const chooseBotMove = (state: Board, color: Color, level: string) => {
+  const moves = collectAllLegalMoves(state, color)
+  if (!moves.length) return null
+  if (level === 'easy') return moves[Math.floor(Math.random() * moves.length)]
+  if (level === 'normal') {
+    const captures = moves.filter((m) => state[m.to.row]?.[m.to.col])
+    return (captures[0] || moves[Math.floor(Math.random() * moves.length)]) ?? moves[0]
+  }
+
+  const depth = 2
+  let bestScore = -Infinity
+  let bestMove: Move | null = null
+  const opponent = color === 'white' ? 'black' : 'white'
+
+  const minimax = (boardState: Board, ply: number, maximizing: boolean): number => {
+    const currentColor = maximizing ? color : opponent
+    const legal = collectAllLegalMoves(boardState, currentColor)
+    if (ply === 0 || !legal.length) return evaluateBoard(boardState, color)
+    if (maximizing) {
+      let maxEval = -Infinity
+      for (const mv of legal) {
+        const evalBoard = applyMoveOnBoard(boardState, mv)
+        const evalScore = minimax(evalBoard, ply - 1, false)
+        maxEval = Math.max(maxEval, evalScore)
+      }
+      return maxEval
+    } else {
+      let minEval = Infinity
+      for (const mv of legal) {
+        const evalBoard = applyMoveOnBoard(boardState, mv)
+        const evalScore = minimax(evalBoard, ply - 1, true)
+        minEval = Math.min(minEval, evalScore)
+      }
+      return minEval
+    }
+  }
+
+  for (const mv of moves) {
+    const scored = minimax(applyMoveOnBoard(state, mv), depth - 1, false)
+    if (scored > bestScore) {
+      bestScore = scored
+      bestMove = mv
+    }
+  }
+  return bestMove ?? moves[0]
+}
+
+const finishGame = (winner: Color | 'draw', reason: 'checkmate' | 'resign' | 'draw') => {
+  if (!currentMatch.value) return
+  matchesStore.finishMatch(matchId, { winner, reason })
+  statusNote.value = winner === 'draw' ? 'Match nul' : winner === 'white' ? 'Victoire des blancs' : 'Victoire des noirs'
+  setTimeout(() => {
+    const destination = userStore.isAuthenticated ? { name: 'match-list' } : { name: 'login' }
+    router.push(destination)
+  }, 1200)
+}
+
+const evaluateGameState = () => {
+  const currentColor = turn.value
+  const moves = collectAllLegalMoves(board.value, currentColor)
+  const inCheck = isKingInCheck(board.value, currentColor)
+
+  if (!moves.length) {
+    if (inCheck) {
+      const winner = currentColor === 'white' ? 'black' : 'white'
+      finishGame(winner, 'checkmate')
+    } else {
+      finishGame('draw', 'draw')
+    }
+    return
+  }
+
+  statusNote.value = inCheck ? `Echec aux ${currentColor === 'white' ? 'blancs' : 'noirs'}` : ''
+
+  if (isBotTurn.value) {
+    isBotThinking.value = true
+    setTimeout(() => {
+      const move = chooseBotMove(
+        board.value,
+        botColor.value as Color,
+        currentMatch.value?.botLevel ?? 'normal',
+      )
+      if (move) {
+        performMove(move)
+      }
+      isBotThinking.value = false
+    }, 260)
+  }
+}
+
+const performMove = (move: Move) => {
+  if (!currentMatch.value) return
+  const piece = board.value[move.from.row]?.[move.from.col]
+  if (!piece) return
+  const newBoard = applyMoveOnBoard(board.value, move)
+  board.value = newBoard
+  turn.value = turn.value === 'white' ? 'black' : 'white'
+  matchesStore.updateBoard(matchId, newBoard, turn.value)
+  selected.value = null
+  legalMoves.value = []
+  evaluateGameState()
+}
+
+const selectSquare = (row: number, col: number) => {
+  if (isGameOver.value || isBotTurn.value) return
+  const piece = board.value[row]?.[col]
+
+  if (!selected.value) {
+    if (!piece || piece.color !== turn.value) return
+    selected.value = { row, col }
+    legalMoves.value = legalMovesForPosition(board.value, row, col, piece)
+    return
+  }
+
+  const square = positionToSquare(row, col)
+  const isPlayable = legalMoves.value.includes(square)
+  if (selected.value.row === row && selected.value.col === col) {
+    selected.value = null
+    legalMoves.value = []
+    return
+  }
+
+  if (isPlayable) {
+    performMove({ from: { row: selected.value.row, col: selected.value.col }, to: { row, col } })
+    return
+  }
+
+  if (piece && piece.color === turn.value) {
+    selected.value = { row, col }
+    legalMoves.value = legalMovesForPosition(board.value, row, col, piece)
   }
 }
 
@@ -327,16 +584,29 @@ const resetGame = () => {
     syncFromStore()
     selected.value = null
     legalMoves.value = []
+    evaluateGameState()
   }
 }
 
+const resign = () => {
+  if (isGameOver.value || !currentMatch.value) return
+  const winner = turn.value === 'white' ? 'black' : 'white'
+  finishGame(winner, 'resign')
+}
+
+const declareDraw = () => {
+  if (isGameOver.value) return
+  finishGame('draw', 'draw')
+}
+
 const backToList = () => {
-  router.push({ name: 'match-list' })
+  router.push({ name: userStore.isAuthenticated ? 'match-list' : 'login' })
 }
 
 onMounted(() => {
   if (!currentMatch.value) return
   syncFromStore()
+  evaluateGameState()
 })
 </script>
 
@@ -378,10 +648,19 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
+.board-actions .danger {
+  border-color: rgba(255, 107, 107, 0.5);
+  color: #ff9b9b;
+}
+
 .status {
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--text-main);
+  text-align: center;
+}
+
+.ai-label {
   text-align: center;
 }
 
@@ -439,6 +718,11 @@ onMounted(() => {
 .case:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+.case.disabled {
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 .clair {
