@@ -8,6 +8,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "api": "node back-end/server.js",
+    "dev:full": "run-p api dev",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
