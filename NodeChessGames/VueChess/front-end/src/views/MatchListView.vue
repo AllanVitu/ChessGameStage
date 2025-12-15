@@ -40,7 +40,7 @@
       </div>
 
       <div class="glass-card creation-card">
-        <div class="row" style="justify-content: space-between; align-items: center; gap: 10px">
+        <div class="row" style="justify-content: space-between; align-items: center; gap: 15px">
           <p class="section-title">Creer une partie</p>
           <div class="mode-switch">
             <button
