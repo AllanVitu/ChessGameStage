@@ -40,10 +40,41 @@
       </div>
 
       <div class="glass-card creation-card">
-        <p class="section-title">Creer une partie locale</p>
+        <div class="row" style="justify-content: space-between; align-items: center; gap: 10px">
+          <p class="section-title">Creer une partie</p>
+          <div class="mode-switch">
+            <button
+              class="chip-btn"
+              :class="{ active: playMode === 'bot' }"
+              type="button"
+              @click="playMode = 'bot'"
+            >
+              Jouer contre l'IA
+            </button>
+            <button
+              class="chip-btn"
+              :class="{ active: playMode === 'human' }"
+              type="button"
+              @click="playMode = 'human'"
+            >
+              Jouer contre un joueur
+            </button>
+          </div>
+        </div>
+
         <div class="grid2">
+          <select v-if="playMode === 'bot'" v-model="botLevel" class="input">
+            <option value="easy">IA - Facile</option>
+            <option value="normal">IA - Normal</option>
+            <option value="hard">IA - Difficile</option>
+          </select>
           <input v-model="hostName" class="input" placeholder="Ton pseudo" />
-          <input v-model="opponentName" class="input" placeholder="Pseudo de l'adversaire" />
+          <input
+            v-if="playMode === 'human'"
+            v-model="opponentName"
+            class="input"
+            placeholder="Pseudo de l'adversaire"
+          />
           <select v-model="hostColor" class="input">
             <option value="White">Je commence (Blanc)</option>
             <option value="Black">Je laisse commencer (Noir)</option>
@@ -51,8 +82,8 @@
           <button class="btn" type="button" :disabled="!canCreate" @click="createLocalMatch">Lancer la partie</button>
         </div>
         <p class="helper">
-          Le match se cree instantanement et ton adversaire est ajoute automatiquement. Tu peux ensuite rejoindre la
-          partie pour jouer.
+          Le match se cree instantanement et ton adversaire est ajoute automatiquement.
+          <span v-if="playMode === 'bot'">En mode IA, elle joue le cote oppose.</span>
         </p>
       </div>
     </section>
@@ -108,6 +139,8 @@ const userStore = useUserStore()
 const hostName = ref('')
 const opponentName = ref('')
 const hostColor = ref<'White' | 'Black'>('White')
+const playMode = ref<'human' | 'bot'>('human')
+const botLevel = ref<'easy' | 'normal' | 'hard'>('normal')
 
 const matches = computed<Match[]>(() => matchesStore.sortedMatches)
 const waitingCount = computed(() => matches.value.filter((m) => m.status === 'waiting').length)
@@ -123,9 +156,17 @@ const userInitial = computed(() =>
 
 const createLocalMatch = () => {
   if (!hostName.value.trim()) return
-  const created = matchesStore.createMatch(hostName.value.trim(), hostColor.value)
-  const opponent = opponentName.value.trim() || 'Invite'
-  matchesStore.joinMatch(created.id, opponent)
+
+  const created = matchesStore.createMatch(hostName.value.trim(), hostColor.value, {
+    mode: playMode.value === 'bot' ? 'bot' : 'local',
+    botLevel: playMode.value === 'bot' ? botLevel.value : undefined,
+  })
+
+  if (playMode.value === 'human') {
+    const opponent = opponentName.value.trim() || 'Invite'
+    matchesStore.joinMatch(created.id, opponent)
+  }
+
   router.push({ name: 'game', params: { id: created.id } })
 }
 
@@ -248,6 +289,18 @@ const joinAndPlay = (match: Match) => {
 .chip-btn.danger {
   border-color: rgba(255, 143, 143, 0.35);
   background: rgba(255, 85, 102, 0.12);
+}
+
+.chip-btn.active {
+  background: rgba(46, 209, 197, 0.18);
+  border-color: rgba(46, 209, 197, 0.4);
+  box-shadow: 0 0 12px rgba(46, 209, 197, 0.25);
+}
+
+.mode-switch {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .hero {
