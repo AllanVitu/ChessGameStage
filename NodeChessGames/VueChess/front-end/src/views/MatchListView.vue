@@ -4,9 +4,13 @@
 
     <header class="topbar">
       <div class="brand">
-        <span class="logo-dot">P1</span>
+        <div class="avatar-chip" :data-empty="!hasAccount">
+          <img v-if="userAvatar" :src="userAvatar" alt="Avatar" />
+          <span v-else>{{ userInitial }}</span>
+        </div>
         <div>
-          <p class="brand-name">Player</p>
+          <p class="brand-name">{{ hasAccount ? userPseudo : 'Joueur local' }}</p>
+          <p class="brand-sub" v-if="hasAccount">{{ userEmail }}</p>
         </div>
       </div>
       <div class="top-actions">
@@ -95,9 +99,11 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMatchesStore, type Match } from '../stores/matches'
+import { useUserStore } from '../stores/user'
 
 const router = useRouter()
 const matchesStore = useMatchesStore()
+const userStore = useUserStore()
 
 const hostName = ref('')
 const opponentName = ref('')
@@ -107,6 +113,13 @@ const matches = computed<Match[]>(() => matchesStore.sortedMatches)
 const waitingCount = computed(() => matches.value.filter((m) => m.status === 'waiting').length)
 const playingCount = computed(() => matches.value.filter((m) => m.status === 'playing').length)
 const canCreate = computed(() => !!hostName.value.trim())
+const hasAccount = computed(() => Boolean(userStore.user?.id || userStore.user?._id))
+const userPseudo = computed(() => userStore.user?.pseudo || userStore.user?.email || 'Player')
+const userEmail = computed(() => userStore.user?.email || 'Mode local')
+const userAvatar = computed(() => userStore.user?.avatar || '')
+const userInitial = computed(() =>
+  (userStore.user?.pseudo || userStore.user?.email || 'P').charAt(0).toUpperCase(),
+)
 
 const createLocalMatch = () => {
   if (!hostName.value.trim()) return
@@ -161,6 +174,32 @@ const joinAndPlay = (match: Match) => {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.avatar-chip {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.avatar-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-chip[data-empty='true'] {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .brand-name {
