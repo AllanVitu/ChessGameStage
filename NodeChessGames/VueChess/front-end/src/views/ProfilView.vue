@@ -87,7 +87,7 @@ const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 const avatarPreview = ref<string>(user.value.avatar || '')
 const fileInput = ref<HTMLInputElement | null>(null)
-const hasAccount = computed(() => Boolean(user.value.id))
+const hasAccount = computed(() => Boolean(user.value.id || user.value._id))
 
 const setMessage = (text: string, type: 'success' | 'error' = 'success') => {
   message.value = text
@@ -152,7 +152,8 @@ const updateProfile = async () => {
   }
 
   try {
-    const response = await fetch(`http://localhost:3000/api/users/${user.value.id}`, {
+    const accountId = user.value.id || user.value._id
+    const response = await fetch(`http://localhost:3000/api/users/${accountId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user.value),

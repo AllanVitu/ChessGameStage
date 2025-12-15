@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 
 export interface UserProfile {
   id?: string
+  _id?: string
   pseudo?: string
   email?: string
   nom?: string
