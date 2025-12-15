@@ -1,6 +1,8 @@
 <template>
   <main class="container">
-    <router-link style="font-size: 30px; text-decoration: none" to="/match-list">&#128281;</router-link>
+    <router-link style="font-size: 30px; text-decoration: none" to="/match-list"
+      >&#128281;</router-link
+    >
     <h1>Profil User</h1>
 
     <div v-if="user" class="card">
@@ -40,11 +42,21 @@
 
       <p v-if="message" class="feedback success-msg">{{ message }}</p>
 
-      <div class="row" style="margin-top: 20px; align-items: center; justify-content: space-between">
+      <div
+        class="row"
+        style="margin-top: 20px; align-items: center; justify-content: space-between"
+      >
+        <router-link
+          class="btn-outline"
+          to="/change-password"
+          style="font-size: 0.9rem; text-decoration: none"
+          >Changer mot de passe</router-link
+        >
+
         <div style="display: flex; gap: 10px">
-          <router-link class="btn-outline" to="/match-list" style="text-decoration: none">
-            Annuler
-          </router-link>
+          <router-link class="btn-outline" to="/match-list" style="text-decoration: none"
+            >Annuler</router-link
+          >
           <button class="btn" @click="updateProfile">Valider</button>
         </div>
 
@@ -60,14 +72,15 @@ import { useUserStore } from '../stores/user'
 import router from '../router'
 import type { UserProfile } from '../stores/user'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 const userStore = useUserStore()
 const user = ref<UserProfile>({ ...(userStore.user || {}) })
 const message = ref('')
 const avatarPreview = ref<string>(user.value.avatar || '')
 const fileInput = ref<HTMLInputElement | null>(null)
 
-const avatarLetter = computed(() => (user.value.pseudo || user.value.email || '?').charAt(0).toUpperCase())
+const avatarLetter = computed(() =>
+  (user.value.pseudo || user.value.email || '?').charAt(0).toUpperCase(),
+)
 
 const openFilePicker = () => {
   fileInput.value?.click()
@@ -113,7 +126,7 @@ const updateProfile = async () => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/users/${user.value.id}`, {
+    const response = await fetch(`http://localhost:3000/api/users/${user.value.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(user.value),

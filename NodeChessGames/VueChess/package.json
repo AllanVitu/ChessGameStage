@@ -8,7 +8,6 @@
   },
   "scripts": {
     "dev": "vite",
-    "start:server": "node back-end/server.js",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
@@ -17,8 +16,6 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",

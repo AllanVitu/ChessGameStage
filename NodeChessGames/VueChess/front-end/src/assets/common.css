@@ -90,10 +90,8 @@ body::after {
 }
 
 .container {
-  width: 100%;
-  max-width: var(--content-max);
+  width: min(var(--content-max), 100%);
   min-height: calc(100vh - 72px);
-  background-color: var(--bg-card);
   background: linear-gradient(
     165deg,
     rgba(255, 255, 255, 0.14) 0%,
@@ -110,7 +108,6 @@ body::after {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }
 
@@ -239,8 +236,6 @@ select:focus {
 
 select {
   appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   background-image:
     linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
     linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
