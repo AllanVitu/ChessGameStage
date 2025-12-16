@@ -50,7 +50,14 @@
               :class="squareClass(rowIndex, fileIndex, files[fileIndex]!, ranks[rowIndex]!)"
               @click="selectSquare(rowIndex, fileIndex)"
             >
-              <span v-if="square">{{ renderPiece(square.color, square.type) }}</span>
+              <span
+                v-if="square"
+                class="piece"
+                :data-piece-color="square.color"
+                :data-piece-type="square.type"
+              >
+                {{ renderPiece(square.color, square.type) }}
+              </span>
             </button>
 
             <div class="noir side">{{ ranks[rowIndex] }}</div>
@@ -718,6 +725,16 @@ onMounted(() => {
 .case:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+.piece[data-piece-color='black'] {
+  color: #b3b9c5;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
+}
+
+.piece[data-piece-color='black'][data-piece-type='p'] {
+  color: #b2b8c2;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.45);
 }
 
 .case.disabled {
